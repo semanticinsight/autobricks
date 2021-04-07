@@ -23,7 +23,7 @@ setup(
     description="Databricks Deployment Utils",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/semanticinsight/autobricks.git",
+    url="https://autobricks.readthedocs.io/en/latest/",
     author="Shaun Ryan",
     author_email="shaun_chiburi@hotmail.com",
     license="MIT",

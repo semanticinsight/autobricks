@@ -1,12 +1,6 @@
-# Introduction
+# [Documentation](https://autobricks.readthedocs.io/en/latest/)
 
-Deployment python scripting utilities for databricks. Currently provides a much more flexible way to do the following:
-- Inspect, cleanup and deploy notebooks and folders of notebooks to a workspace
-- Run notebooks on a jobs cluster for integration tests and deploymenyt processing databricks side
-- Inspect, cleanup and deploy large binary files to databricks Dbfs e.g. data or libraries
-
-
-# Setup
+# [Development Setup](https://github.com/semanticinsight/autobricks)
 
 Create virual environment and install dependencies for local development:
 
