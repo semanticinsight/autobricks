@@ -1,6 +1,8 @@
-# [Documentation](https://autobricks.readthedocs.io/en/latest/)
+# Documentation
 
-# [Development Setup](https://github.com/semanticinsight/autobricks)
+https://autobricks.readthedocs.io/en/latest/
+
+# Development Setup
 
 Create virual environment and install dependencies for local development:
 
