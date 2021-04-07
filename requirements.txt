@@ -1,0 +1,4 @@
+requests==2.25.1
+mlflow==1.12.1 
+PyYAML==5.4.1
+wheel_inspect==1.7.0

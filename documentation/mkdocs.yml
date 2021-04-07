@@ -1,0 +1,11 @@
+site_name: Autobricks
+nav:
+    - Home: index.md
+    - Examples: examples.md
+    - Cluster: cluster.md
+    - Dbfs: dbfs.md
+    - Job: job.md
+    - Library: library.md
+    - Workspace: workspace.md
+    - About: about.md
+theme: readthedocs
