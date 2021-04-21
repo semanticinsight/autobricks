@@ -27,7 +27,7 @@ setup(
     project_urls={
         'GitHub': 'https://github.com/semanticinsight/autobricks',
         'Documentation': 'https://autobricks.readthedocs.io/en/latest/'
-    }
+    },
     author="Shaun Ryan",
     author_email="shaun_chiburi@hotmail.com",
     license="MIT",
