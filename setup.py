@@ -5,7 +5,7 @@ from setuptools import setup
 HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
-README = (HERE / "README.md").read_text()
+README = (HERE / "PYPI.md").read_text()
 
 # This call to setup() does all the work
 setup(
@@ -24,6 +24,10 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://autobricks.readthedocs.io/en/latest/",
+    project_urls={
+        'GitHub': 'https://github.com/semanticinsight/autobricks',
+        'Documentation': 'https://autobricks.readthedocs.io/en/latest/'
+    }
     author="Shaun Ryan",
     author_email="shaun_chiburi@hotmail.com",
     license="MIT",
