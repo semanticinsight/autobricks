@@ -15,12 +15,18 @@ pool:
 jobs:
 - job: test_job
   steps:
-  - task: AzureKeyVault@1
+  - task: AzureKeyVault@2
     inputs:
       azureSubscription: 'Visual Studio Enterprise (e95203c2-64a0-43f9-bfc5-a4fdc588571a)'
       KeyVaultName: 'kv-test-sibyte'
       SecretsFilter: '*'
       RunAsPreJob: false
+  # - task: AzureKeyVault@1
+  #   inputs:
+  #     azureSubscription: 'Visual Studio Enterprise (e95203c2-64a0-43f9-bfc5-a4fdc588571a)'
+  #     KeyVaultName: 'kv-test-sibyte'
+  #     SecretsFilter: '*'
+  #     RunAsPreJob: false
 
 
 # steps:
