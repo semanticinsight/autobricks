@@ -20,7 +20,7 @@ jobs:
       azureSubscription: 'Visual Studio Enterprise (e95203c2-64a0-43f9-bfc5-a4fdc588571a)'
       KeyVaultName: 'kv-test-sibyte'
       SecretsFilter: '*'
-      RunAsPreJob: true
+      RunAsPreJob: false
 
 
 # steps:
