@@ -9,25 +9,8 @@ pool:
   vmImage: 'ubuntu-latest'
 strategy:
   matrix:
-    Python37:
-      python.version: '3.7'
-
-# jobs:
-# - job: test_job
-#   steps:
-#   - task: AzureKeyVault@2
-#     inputs:
-#       azureSubscription: 'Visual Studio Enterprise (e95203c2-64a0-43f9-bfc5-a4fdc588571a)'
-#       KeyVaultName: 'kv-test-sibyte'
-#       SecretsFilter: '*'
-#       RunAsPreJob: false
-  # - task: AzureKeyVault@1
-  #   inputs:
-  #     azureSubscription: 'Visual Studio Enterprise (e95203c2-64a0-43f9-bfc5-a4fdc588571a)'
-  #     KeyVaultName: 'kv-test-sibyte'
-  #     SecretsFilter: '*'
-  #     RunAsPreJob: false
-
+    Python38:
+      python.version: '3.8'
 
 steps:
 - task: UsePythonVersion@0
@@ -38,7 +21,6 @@ steps:
 - script: |
     python -m pip install --upgrade pip setuptools wheel twine
     pip install -r requirements.txt
-    pip install -r dev_requirements.txt
   displayName: 'Install dependencies'
 
   # - script: |
