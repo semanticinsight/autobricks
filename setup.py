@@ -14,7 +14,7 @@ setup(
         # "template": "{tag}",
         # "dev_template": "{tag}.dev{ccount}",
         # "dirty_template": "{tag}.dev{ccount}.dirty",
-        "starting_version": "0.0.1",
+        # "starting_version": "0.0.1",
         "version_callback": None,
         "version_file": "version.txt",
         "count_commits_from_version_file": False
