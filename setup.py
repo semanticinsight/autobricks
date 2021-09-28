@@ -1,6 +1,5 @@
 import pathlib
 from setuptools import setup
-from autobricks import __version__
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -12,7 +11,13 @@ README = (HERE / "PYPI.md").read_text()
 setup(
     name="autobricks",
     version_config={
-        "version_callback": __version__,
+        "template": "{tag}",
+        "dev_template": "{tag}.dev{ccount}",
+        "dirty_template": "{tag}.dev{ccount}.dirty",
+        "starting_version": "0.0.1",
+        "version_callback": None,
+        "version_file": None,
+        "count_commits_from_version_file": False
     },
     setup_requires=['setuptools-git-versioning'],
     description="Databricks Deployment Utils",
