@@ -1,3 +1,5 @@
+<img src="https://img.shields.io/badge/Python-v3.8-blue">
+
 # Documentation
 
 https://autobricks.readthedocs.io/en/latest/
@@ -7,11 +9,10 @@ https://autobricks.readthedocs.io/en/latest/
 Create virual environment and install dependencies for local development:
 
 ```
-python3.7 -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install -r dev_requirements.txt
 ```
 
 The application requires the following environment variables specific the databricks workspace and security token that you're using for testing, development and deployment. Substitute your own values between the angled brackets:
@@ -21,7 +22,7 @@ export DBUTILSTOKEN="<my_token>"
 export DATABRICKS_API_HOST="https://<my_databricks_host>.azuredatabricks.net"
 ```
 
-Exporting variables doesn't make for a great development experience so I recommend using the enviroment manager tools of your editor and for testing create a ./pytest.ini that looks like this:
+Exporting variables doesn't make for a great development experience so I recommend using the environment manager tools of your editor and for testing create a ./pytest.ini that looks like this:
 
 ```
 [pytest]
@@ -42,7 +43,7 @@ Build python wheel:
 python setup.py sdist bdist_wheel
 ```
 
-There is a CI build configured for this repo that builds on main origin on a private Azure DevOps service. It doesn't yet push to PyPi.
+There is a CI build configured for this repo that builds on main origin and publishes to PyPi.
 
 # Test
 

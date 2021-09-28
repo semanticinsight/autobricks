@@ -11,12 +11,12 @@ README = (HERE / "PYPI.md").read_text()
 setup(
     name="autobricks",
     version_config={
-        "template": "{tag}",
-        "dev_template": "{tag}.dev{ccount}",
-        "dirty_template": "{tag}.dev{ccount}.dirty",
+        # "template": "{tag}",
+        # "dev_template": "{tag}.dev{ccount}",
+        # "dirty_template": "{tag}.dev{ccount}.dirty",
         "starting_version": "0.0.1",
         "version_callback": None,
-        "version_file": None,
+        "version_file": "version.txt",
         "count_commits_from_version_file": False
     },
     setup_requires=['setuptools-git-versioning'],
@@ -34,7 +34,7 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     packages=["autobricks"],
     install_requires=[
