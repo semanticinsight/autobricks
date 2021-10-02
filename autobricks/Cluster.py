@@ -1,5 +1,5 @@
-from .ApiUtils import api_get, api_post, base64_decode, base64_encode
-import json
+from .ApiUtils import ApiService
+from . import Configuration
 import os
 import yaml
 from enum import Enum
@@ -13,6 +13,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.{endpoint}")
 
+_api_service = ApiService(Configuration.config)
 
 class ClusterState(Enum):
     PENDING = 1
@@ -78,7 +79,7 @@ def cluster_action(cluster_id: str, cluster_action: ClusterAction):
 
     logger.info(f"{cluster_action.name} cluster: {cluster_id}")
 
-    response = api_post(endpoint, action, cluster)
+    response = _api_service.api_post(endpoint, action, cluster)
 
     return response
 
@@ -151,7 +152,7 @@ def cluster_create(
     if len(clusters) == 0 or delete_if_exists or allow_duplicate_names:
 
         logger.info(f"Creating cluster {cluster_name}")
-        response = api_post(endpoint, "create", cluster_defn)
+        response = _api_service.api_post(endpoint, "create", cluster_defn)
         cluster_id = response["cluster_id"]
         logger.info(f"Cluster {cluster_name} created with id: {cluster_id}")
         create_response = {"cluster_id": cluster_id}
@@ -189,7 +190,7 @@ def cluster_delete_clusters(clusters: list):
 
 def cluster_list():
 
-    response = api_get(endpoint, "list")
+    response = _api_service.api_get(endpoint, "list")
     if response == {}:
         return None
     else:
@@ -216,7 +217,7 @@ def cluster_is_terminated(cluster_id: str):
 def cluster_get(cluster_id: str):
 
     query = f"cluster_id={cluster_id}"
-    return api_get(endpoint, "get", query=query)
+    return _api_service.api_get(endpoint, "get", query=query)
 
 
 def cluster_wait_until_state(

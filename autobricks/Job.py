@@ -1,16 +1,11 @@
 from .ApiUtils import (
-    api_get,
-    api_post,
-    base64_decode,
-    base64_encode,
+    ApiService,
     format_path_for,
     OS as OsEnum,
 )
-import json
-import os
-from uuid import UUID, uuid4
+from . import Configuration
+from uuid import UUID
 import time
-import datetime
 import logging
 
 endpoint = "jobs"
@@ -19,11 +14,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.{endpoint}")
 
+_api_service = ApiService(Configuration.config)
 
 def job_run_get(run_id: int):
 
     try:
-        response = api_get(endpoint, "runs/get", query=f"run_id={run_id}")
+        response = _api_service.api_get(endpoint, "runs/get", query=f"run_id={run_id}")
     except Exception as e:
         response = {"run_id": -1, "message": str(e)}
 
@@ -32,7 +28,7 @@ def job_run_get(run_id: int):
 
 def job_runs_list():
 
-    response = api_get(endpoint, "runs/list")
+    response = _api_service.api_get(endpoint, "runs/list")
 
     return response
 
@@ -40,7 +36,7 @@ def job_runs_list():
 def job_run_delete(run_id: int):
     data = {"run_id": run_id}
     try:
-        response = api_post(endpoint, "runs/delete", data)
+        response = _api_service.api_post(endpoint, "runs/delete", data)
     except Exception as e:
         response = {}
 
@@ -90,7 +86,7 @@ def job_run_submit(
         data["idempotency_token"] = str(idempotency_token)
 
     logger.info(f"Submitting job for notebook {fmt_notebook_path}")
-    return api_post(endpoint, "runs/submit", data)
+    return _api_service.api_post(endpoint, "runs/submit", data)
 
 
 def job_run_notebook(

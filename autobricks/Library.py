@@ -1,12 +1,14 @@
-from .ApiUtils import api_get, api_post
+from .ApiUtils import ApiService
+from . import Configuration
 from wheel_inspect import inspect_wheel
 from dataclasses import dataclass
 import os
 
+_api_service = ApiService(Configuration.config)
 
 def library_all_cluster_statuses():
 
-    return api_get("libraries", "all-cluster-statuses")
+    return _api_service.api_get("libraries", "all-cluster-statuses")
 
 
 @dataclass

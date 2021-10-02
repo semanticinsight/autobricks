@@ -1,11 +1,13 @@
 import requests
 from requests.exceptions import HTTPError
-import json
 import os
 import base64
 import sys
 from enum import Enum
 import logging
+from typing import Union
+from .AuthFactory import auth_factory, AuthenticationType
+from .Auth import Auth
 
 
 logging.basicConfig(
@@ -22,46 +24,70 @@ class OS(Enum):
 
 
 API_VERSION = "2.0"
-host = os.environ["DATABRICKS_API_HOST"]
-token = os.environ["DBUTILSTOKEN"]
 
 
-def api_get(api: str, function: str, data: dict = None, query: str = None):
+class ApiService:
 
-    url = f"{host}/api/{API_VERSION}/{api}/{function}"
-    if query:
-        url = f"{url}?{query}"
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(url=url, headers=headers, json=data)
+    def __init__(self, configuration:dict):
 
-    try:
-        response.raise_for_status()
-
-    except HTTPError as e:
-
-        msg = f"{e.response.status_code} error at {url} {e.response.text}"
-        logger.error(msg)
-        raise e
-
-    return response.json()
+        auth_type_str = configuration["auth_type"]
+        self.host = configuration["databricks_api_host"]
+        auth_type:AuthenticationType = AuthenticationType[auth_type_str]
+        auth: Auth = auth_factory.get_auth(auth_type, configuration)
+        
+        self._headers = auth.get_headers()
 
 
-def api_post(api: str, function: str, data: dict):
+    def _base_api_get(self, url: str, headers: dict, data: dict = None, query: str = None):
 
-    url = f"{host}/api/{API_VERSION}/{api}/{function}"
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.post(url=url, headers=headers, json=data)
+        if query:
+            url = f"{url}?{query}"
+        response = requests.get(url=url, headers=headers, json=data)
 
-    try:
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
 
-    except HTTPError as e:
+        except HTTPError as e:
 
-        msg = f"{e.response.status_code} error at {url} {e.response.text}"
-        logger.error(msg)
-        raise e
+            msg = f"{e.response.status_code} error at {url} {e.response.text}"
+            logger.error(msg)
+            raise e
 
-    return response.json()
+        return response
+
+
+    def _base_api_post(self, url: str, headers: dict, data:Union[str,dict]):
+
+        response = requests.post(url=url, headers=headers, json=data)
+        
+        try:
+            response.raise_for_status()
+
+        except HTTPError as e:
+
+            msg = f"{e.response.status_code} error at {url} {e.response.text}"
+            logger.error(msg)
+            raise e
+
+        return response
+
+
+    def api_get(self, api: str, function: str, data: dict = None, query: str = None):
+
+        url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
+        if query:
+            url = f"{url}?{query}"
+        response = self._base_api_get(url=url, headers=self._headers, data=data)
+
+        return response.json()
+
+
+    def api_post(self, api: str, function: str, data: dict):
+
+        url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
+        response = self._base_api_post(url=url, headers=self._headers, data=data)
+
+        return response.json()
 
 
 def base64_decode(base64_string: str, encoding: str = "utf-8"):

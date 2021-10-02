@@ -1,5 +1,5 @@
-from .ApiUtils import api_get, api_post, base64_decode, format_path_for_os
-import json
+from .ApiUtils import ApiService, base64_decode, format_path_for_os
+from . import Configuration
 import base64
 import os, fnmatch
 import logging
@@ -10,13 +10,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.{endpoint}")
 
+_api_service = ApiService(Configuration.config)
 
 def dbfs_upload(from_path: str, to_path: str, overwrite: bool = True):
 
     # Create a handle that will be used to add blocks
     data = {"path": to_path, "overwrite": "true"}
 
-    handle = api_post(endpoint, "create", data)["handle"]
+    handle = _api_service.api_post(endpoint, "create", data)["handle"]
 
     with open(from_path, "rb") as f:
 
@@ -25,47 +26,47 @@ def dbfs_upload(from_path: str, to_path: str, overwrite: bool = True):
             # data = block.encode("utf-8")
             data = base64.b64encode(block)
             data = {"handle": handle, "data": data.decode()}
-            api_post(endpoint, "add-block", data)
+            _api_service.api_post(endpoint, "add-block", data)
 
     # close the handle to finish uploading
     data = {"handle": handle}
-    return api_post(endpoint, "close", data)
+    return _api_service.api_post(endpoint, "close", data)
 
 
 def dbfs_delete_file(path: str, recursive: bool = True):
 
     data = {"path": path, "recursive": recursive}
-    return api_post(endpoint, "delete", data)
+    return _api_service.api_post(endpoint, "delete", data)
 
 
 def dbfs_get_status(path: str):
 
     data = {"path": path}
-    return api_get(endpoint, "get-status", data)
+    return _api_service.api_get(endpoint, "get-status", data)
 
 
 def dbfs_list(path: str):
 
     data = {"path": path}
-    return api_get(endpoint, "list", data)
+    return _api_service.api_get(endpoint, "list", data)
 
 
 def dbfs_mkdirs(path: str):
 
     data = {"path": path}
-    return api_post(endpoint, "mkdirs", data)
+    return _api_service.api_post(endpoint, "mkdirs", data)
 
 
 def dbfs_move(source_path: str, destination_path: str):
 
     data = {"source_path": source_path, "destination_path": destination_path}
-    return api_post(endpoint, "move", data)
+    return _api_service.api_post(endpoint, "move", data)
 
 
 def dbfs_read(path: str, offset: int, length: int):
 
     data = {"path": path, "offset": offset, "length": length}
-    return api_get(endpoint, "read", data)
+    return _api_service.api_get(endpoint, "read", data)
 
 
 def dbfs_download(from_path: str, to_path: str):

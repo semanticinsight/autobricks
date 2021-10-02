@@ -1,5 +1,12 @@
-from .ApiUtils import *
-import json
+from .ApiUtils import (
+    ApiService, 
+    base64_encode, 
+    base64_decode, 
+    format_path_for_os,
+    format_path_for,
+    OS
+)
+from . import Configuration
 import os
 import logging
 
@@ -11,6 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.{endpoint}")
 
+_api_service = ApiService(Configuration.config)
 
 class DeployMode(Enum):
     DEFAULT = 1
@@ -67,38 +75,38 @@ def workspace_import(
         "content": content,
         "overwrite": overwrite,
     }
-    return api_post(endpoint, "import", data)
+    return _api_service.api_post(endpoint, "import", data)
 
 
 def workspace_delete(path: str, recursive: True):
 
     data = {"path": path, "recursive": recursive}
-    return api_post(endpoint, "delete", data)
+    return _api_service.api_post(endpoint, "delete", data)
 
 
 def workspace_get_status(path: str):
 
     data = {"path": path}
-    return api_get(endpoint, "get-status", data)
+    return _api_service.api_get(endpoint, "get-status", data)
 
 
 def workspace_list(path: str):
 
     data = {"path": path}
-    return api_get(endpoint, "list", data)
+    return _api_service.api_get(endpoint, "list", data)
 
 
 def workspace_mkdirs(path: str):
 
     data = {"path": path}
-    return api_post(endpoint, "mkdirs", data)
+    return _api_service.api_post(endpoint, "mkdirs", data)
 
 
 def workspace_export(from_path: str, format: Format, to_path: str):
 
     data = {"path": from_path, "format": format.name.upper(), "direct_download": False}
 
-    response = api_get(endpoint, "export", data)
+    response = _api_service.api_get(endpoint, "export", data)
 
     file_type = response["file_type"]
     filename = os.path.basename(from_path)
