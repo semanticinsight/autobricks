@@ -35,6 +35,19 @@ steps:
 
 - script: |
     export SKIP_INTEGRATION=True
+
+    export AUTH_TYPE=SERVICE_PRINCIPLE_MGMT_ENDPOINT
+    export DBUTILSTOKEN=dapixxx
+    export TENANT_ID=11111111-0000-0000-0000-000000000000
+    export SP_CLIENT_ID=22222222-0000-0000-0000-000000000000
+    export SP_CLIENT_SECRET=ThisIsTheSecret
+    export AD_RESOURCE=33333333-0000-0000-0000-000000000000
+    export MGMT_RESOURCE_ENDPOINT=https://management.core.windows.net/
+    export WORKSPACE_NAME=workspacename
+    export RESOURCE_GROUP=resourcegroup
+    export SUBSCRIPTION_ID=44444444-0000-0000-0000-000000000000
+    export DATABRICKS_API_HOST=https://wwww.autobricks.net
+    
     pip install .
     pytest test/unit --junitxml=junit/test-results.xml --cov=autobricks --cov-report=xml --cov-report=html
   displayName: 'Unit Tests'
