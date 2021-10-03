@@ -36,7 +36,7 @@ steps:
 - script: |
     export SKIP_INTEGRATION=True
     pip install .
-    pytest test --junitxml=junit/test-results.xml --cov=autobricks --cov-report=xml --cov-report=html
+    pytest test/unit --junitxml=junit/test-results.xml --cov=autobricks --cov-report=xml --cov-report=html
   displayName: 'Unit Tests'
 
 
