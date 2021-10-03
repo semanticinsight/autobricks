@@ -34,16 +34,7 @@ steps:
   displayName: 'Artifact creation'
 
 - script: |
-    export DATABRICKS_API_HOST=$(WORKSPACE-REGION-URL)
-    export DBUTILSTOKEN=$(DATABRICKS-PAT-TOKEN)
-    DEV=dev
-    VER=$(Build.SourceVersion)
-    if [[ "$VER" == *"$DEV"* ]]; then
-      export SKIP_INTEGRATION=True
-      echo "Development Build Skipping integration test"
-    fi
     export SKIP_INTEGRATION=True
-
     pip install .
     pytest test --junitxml=junit/test-results.xml --cov=autobricks --cov-report=xml --cov-report=html
   displayName: 'Unit Tests'
