@@ -1,6 +1,5 @@
 import requests
 from requests.exceptions import HTTPError
-import os
 import base64
 import sys
 from enum import Enum

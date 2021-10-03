@@ -1,18 +1,17 @@
-import requests
-import requests_mock
 import sys
 from pytest_mock import mocker
 from autobricks import ApiUtils
 from autobricks import Configuration
 from dataclasses import dataclass
 import pytest
-import os
 
 
 @pytest.fixture
 def config():
     @dataclass
     class Config:
+        config: dict
+        host: str
         version: str
         function: str
         endpoint: str
@@ -20,6 +19,8 @@ def config():
         query: str
 
     return Config(
+        config=Configuration.config,
+        host = Configuration.config["databricks_api_host"],
         version="2.0",
         function="testfunc",
         endpoint="endpoint",
@@ -34,14 +35,20 @@ def api_utils_mock(mocker, config):
     mocker.patch.object(ApiUtils, "API_VERSION", config.version)
 
 
-def test_get_data_query(mocker, requests_mock, config, api_utils_mock):
+@pytest.fixture
+def api_service(config):
 
-    host = Configuration.config["databricks_api_host"]
+    api_service = ApiUtils.ApiService(config.config)
+    return api_service
+
+
+def test_get_data_query(requests_mock, config, api_service):
+
     requests_mock.get(
-        f"{host}/api/{config.version}/{config.endpoint}/{config.function}?{config.query}",
+        f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}?{config.query}",
         json=config.data,
     )
-    api_service = ApiUtils.ApiService(Configuration.config)
+    
     response = api_service.api_get(
         config.endpoint, config.function, config.data, config.query
     )
@@ -49,15 +56,12 @@ def test_get_data_query(mocker, requests_mock, config, api_utils_mock):
     assert config.data == response
 
 
-def test_get_data_query_exception(mocker, requests_mock, config, api_utils_mock):
+def test_get_data_query_exception(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
-    url = f"{host}/api/{config.version}/{config.endpoint}/{config.function}?{config.query}"
+    url = f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}?{config.query}"
     error_text = "an error occurred"
     error_code = 404
     requests_mock.get(url, text=error_text, status_code=error_code)
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     result = None
     try:
@@ -73,30 +77,24 @@ def test_get_data_query_exception(mocker, requests_mock, config, api_utils_mock)
     assert result
 
 
-def test_get_data(mocker, requests_mock, config, api_utils_mock):
+def test_get_data(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
     requests_mock.get(
-        f"{host}/api/{config.version}/{config.endpoint}/{config.function}",
+        f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}",
         json=config.data,
     )
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     response = api_service.api_get(config.endpoint, config.function, config.data)
 
     assert config.data == response
 
 
-def test_get_data_query_exception(mocker, requests_mock, config, api_utils_mock):
+def test_get_data_query_exception(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
-    url = f"{host}/api/{config.version}/{config.endpoint}/{config.function}"
+    url = f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}"
     error_text = "an error occurred"
     error_code = 404
     requests_mock.get(url, text=error_text, status_code=error_code)
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     result = None
     try:
@@ -111,30 +109,24 @@ def test_get_data_query_exception(mocker, requests_mock, config, api_utils_mock)
     assert result
 
 
-def test_get(mocker, requests_mock, config, api_utils_mock):
+def test_get(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
     requests_mock.get(
-        f"{host}/api/{config.version}/{config.endpoint}/{config.function}",
+        f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}",
         json=config.data,
     )
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     response = api_service.api_get(config.endpoint, config.function)
 
     assert config.data == response
 
 
-def test_get_exception(mocker, requests_mock, config, api_utils_mock):
+def test_get_exception(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
-    url = f"{host}/api/{config.version}/{config.endpoint}/{config.function}"
+    url = f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}"
     error_text = "an error occurred"
     error_code = 404
     requests_mock.get(url, text=error_text, status_code=error_code)
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     result = None
     try:
@@ -149,30 +141,25 @@ def test_get_exception(mocker, requests_mock, config, api_utils_mock):
     assert result
 
 
-def test_post_data(requests_mock, config, api_utils_mock):
+def test_post_data(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
     requests_mock.post(
-        f"{host}/api/{config.version}/{config.endpoint}/{config.function}",
+        f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}",
         json=config.data,
     )
-
-    api_service = ApiUtils.ApiService(Configuration.config)
 
     response = api_service.api_post(config.endpoint, config.function, config.data)
 
     assert config.data == response
 
 
-def test_post_data_exception(requests_mock, config, api_utils_mock):
+def test_post_data_exception(requests_mock, config, api_service):
 
-    host = Configuration.config["databricks_api_host"]
-    url = f"{host}/api/{config.version}/{config.endpoint}/{config.function}"
+    url = f"{config.host}/api/{config.version}/{config.endpoint}/{config.function}"
     error_text = "an error occurred"
     error_code = 404
     requests_mock.post(url, text=error_text, status_code=error_code)
-
-    api_service = ApiUtils.ApiService(Configuration.config)
+    
     result = None
     try:
         response = api_service.api_post(config.endpoint, config.function, config.data)

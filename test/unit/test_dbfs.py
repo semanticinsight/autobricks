@@ -3,6 +3,7 @@ import requests_mock
 import sys
 import base64
 from pytest_mock import mocker
+from autobricks import Configuration
 from autobricks import Dbfs, ApiUtils
 from dataclasses import dataclass
 import pytest
@@ -14,25 +15,34 @@ from unittest import mock
 def config():
     @dataclass
     class Config:
+        config: dict
         host: str
-        token: str
         version: str
         endpoint: str
 
     return Config(
-        host="https://wwww.autobricks.net", token="dapixxx", version="2.0", endpoint="dbfs"
+        config=Configuration.config,
+        host = Configuration.config["databricks_api_host"],
+        version="2.0", 
+        endpoint="dbfs"
     )
 
 
 @pytest.fixture
-def api_utils_mock(mocker, config):
+def api_service():
 
-    mocker.patch.object(ApiUtils, "host", config.host)
-    mocker.patch.object(ApiUtils, "token", config.token)
+    api_service = ApiUtils.ApiService(config.config)
+    return api_service
+
+
+@pytest.fixture
+def api_utils_mock(mocker, config, api_service):
+
     mocker.patch.object(ApiUtils, "API_VERSION", config.version)
+    mocker.patch.object(Dbfs, "_api_service", api_service)
 
 
-def test_dbfs_list(requests_mock, config, api_utils_mock):
+def test_dbfs_list(requests_mock, config):
 
     expected = {
         "files": [
@@ -60,7 +70,7 @@ def test_dbfs_list(requests_mock, config, api_utils_mock):
     assert expected == result
 
 
-def test_dbfs_get_status(requests_mock, config, api_utils_mock):
+def test_dbfs_get_status(requests_mock, config):
 
     expected = {
         "path": "/path/of/file",
@@ -79,7 +89,7 @@ def test_dbfs_get_status(requests_mock, config, api_utils_mock):
     assert expected == result
 
 
-def test_dbfs_delete(requests_mock, config, api_utils_mock):
+def test_dbfs_delete(requests_mock, config):
 
     requests_mock.post(
         f"{config.host}/api/{config.version}/{config.endpoint}/delete", json={}
@@ -90,7 +100,7 @@ def test_dbfs_delete(requests_mock, config, api_utils_mock):
     assert {} == result
 
 
-def test_dbfs_mkdirs(requests_mock, config, api_utils_mock):
+def test_dbfs_mkdirs(requests_mock, config):
 
     requests_mock.post(
         f"{config.host}/api/{config.version}/{config.endpoint}/mkdirs", json={}
@@ -101,7 +111,7 @@ def test_dbfs_mkdirs(requests_mock, config, api_utils_mock):
     assert {} == result
 
 
-def test_dbfs_move(requests_mock, config, api_utils_mock):
+def test_dbfs_move(requests_mock, config):
 
     requests_mock.post(
         f"{config.host}/api/{config.version}/{config.endpoint}/move", json={}
@@ -112,7 +122,7 @@ def test_dbfs_move(requests_mock, config, api_utils_mock):
     assert {} == result
 
 
-def test_dbfs_read(requests_mock, config, api_utils_mock):
+def test_dbfs_read(requests_mock, config):
 
     path = "/path/of/file"
     offset = 1024
@@ -129,7 +139,7 @@ def test_dbfs_read(requests_mock, config, api_utils_mock):
     assert expected == result
 
 
-def test_dbfs_download_large(mocker, requests_mock, config, api_utils_mock):
+def test_dbfs_download_large(requests_mock, config):
 
     from_path = "/path/of/file"
     to_path = "./text.txt"
@@ -162,7 +172,7 @@ def test_dbfs_download_large(mocker, requests_mock, config, api_utils_mock):
         )
 
 
-def test_dbfs_download(requests_mock, config, api_utils_mock):
+def test_dbfs_download(requests_mock, config):
 
     from_path = "/path/of/file"
     to_path = "./text.txt"
@@ -218,7 +228,7 @@ def test_read_file_block():
     assert read_data == data
 
 
-def test_dbfs_upload(requests_mock, config, api_utils_mock):
+def test_dbfs_upload(requests_mock, config):
 
     data = "booyakashaan!"
     path = "/path/of/file.txt"
