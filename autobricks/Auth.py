@@ -80,7 +80,7 @@ class SPMgmtEndpointAuth(SPAuth):
 
         url=f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
         headers = {
-            "Authorization": f"Bearer {self.mgmt_access_token}",
+            "Authorization": f"Bearer {self.bearer_token}",
             "X-Databricks-Azure-SP-Management-Token": self.mgmt_access_token,
             "X-Databricks-Azure-Workspace-Resource-Id": url
         }

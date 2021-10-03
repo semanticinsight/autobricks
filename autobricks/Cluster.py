@@ -188,7 +188,7 @@ def cluster_delete_clusters(clusters: list):
         cluster_action(c, ClusterAction.DELETE)
 
 
-def cluster_list():
+def cluster_list()->dict:
 
     response = _api_service.api_get(endpoint, "list")
     if response == {}:
