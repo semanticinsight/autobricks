@@ -30,7 +30,7 @@ This library supports all by simply setting the following environment variables 
 |WORKSPACE_NAME         |           |                                        | required | 
 |RESOURCE_GROUP         |           |                                        | required |
 |SUBSCRIPTION_ID        |           |                                        | required |
-|DATABRICKS_API_HOST    |           |                                        | required |
+|DATABRICKS_API_HOST    | required  | required                               | required |
 
 NOTE: AUTH_TYPE sets the authorisation mode and therefore what configuration to expect. Ensure that sensitive values are managed using secret redaction e.g. key vault or some other method.
 
