@@ -25,19 +25,29 @@ Azure databricks allows the following authentication methods:
 
 This library supports all by simply setting the following environment variables as required for each method:
 
-| Variable | User PAT | SP | SP on Mgmt Endpoint |
-|----------|----------|----|---------------------|
-|AUTH_TYPE              | "USER"    | "SERVICE_PRINCIPLE"                    | "SERVICE_PRINCIPLE_MGMT_ENDPOINT" |
-|DBUTILSTOKEN           | required  | required                               | required |
-|TENANT_ID              |           | required                               | required |
-|SP_CLIENT_ID           |           | required                               | required |
-|SP_CLIENT_SECRET       |           | required                               | required |
-|AD_RESOURCE            |           | "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d" | "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d" |
-|MGMT_RESOURCE_ENDPOINT |           |                                        | "https://management.core.windows.net/" |
-|WORKSPACE_NAME         |           |                                        | required | 
-|RESOURCE_GROUP         |           |                                        | required |
-|SUBSCRIPTION_ID        |           |                                        | required |
-|DATABRICKS_API_HOST    | required  | required                               | required |
+| Variable              | User PAT | SP                  | SP on Mgmt Endpoint               |
+|-----------------------|----------|---------------------|-----------------------------------|
+|AUTH_TYPE              | USER     | SERVICE_PRINCIPLE   | SERVICE_PRINCIPLE_MGMT_ENDPOINT   |
+|DBUTILSTOKEN           | &#10003; | &#10003;            | &#10003;                          |
+|TENANT_ID              |          | &#10003;            | &#10003;                          |
+|SP_CLIENT_ID           |          | &#10003;            | &#10003;                          |
+|SP_CLIENT_SECRET       |          | &#10003;            | &#10003;                          |
+|AD_RESOURCE            |          | &#10003;            | &#10003;                          |
+|MGMT_RESOURCE_ENDPOINT |          |                     | &#10003;                          |
+|WORKSPACE_NAME         |          |                     | &#10003;                          | 
+|RESOURCE_GROUP         |          |                     | &#10003;                          |
+|SUBSCRIPTION_ID        |          |                     | &#10003;                          |
+|DATABRICKS_API_HOST    | &#10003; | &#10003;            | &#10003;                          |
+
+The following variables will default.
+
+| Variable              | Default                              |
+|-----------------------|--------------------------------------|
+|AUTH_TYPE              | SERVICE_PRINCIPLE                    |
+|AD_RESOURCE            | 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d |
+|MGMT_RESOURCE_ENDPOINT | https://management.core.windows.net/ |
+
+
 
 NOTE: AUTH_TYPE sets the authorisation mode and therefore what configuration to expect. Ensure that sensitive values are managed using secret redaction e.g. key vault or some other method.
 
