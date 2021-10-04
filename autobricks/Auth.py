@@ -25,7 +25,11 @@ class UserAuth(Auth):
 
     def __init__(self, parameters:dict):
 
-        self.bearer_token = parameters["dbutilstoken"]
+        try:
+            self.bearer_token = parameters["dbutilstoken"]
+        except KeyError:
+            msg = "dbutilstoken key not found in UserAuth parameters"
+            raise ValueError(msg)
 
     def get_headers(self):
         headers = {"Authorization": f"Bearer {self.bearer_token}"}
