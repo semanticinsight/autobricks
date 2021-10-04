@@ -1,4 +1,4 @@
-from .ApiUtils import ApiService
+from .ApiService import ApiService
 from . import Configuration
 from wheel_inspect import inspect_wheel
 from dataclasses import dataclass

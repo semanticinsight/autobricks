@@ -72,6 +72,6 @@ def test_user_auth_header_keyerror(config):
     
     del config.config["dbutilstoken"]
     a = Mock()
-    a.side_effect = ValueError("dbutilstoken key not found in UserAuth parameters")
-    with pytest.raises(ValueError, match="dbutilstoken key not found in UserAuth parameters"):
+    a.side_effect = KeyError("dbutilstoken key not found in UserAuth parameters")
+    with pytest.raises(KeyError, match="dbutilstoken key not found in UserAuth parameters"):
         auth = UserAuth(config.config)

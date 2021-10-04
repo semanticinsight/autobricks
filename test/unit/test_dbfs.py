@@ -1,10 +1,7 @@
-import requests
-import requests_mock
-import sys
+
 import base64
-from pytest_mock import mocker
 from autobricks import Configuration
-from autobricks import Dbfs, ApiUtils
+from autobricks import Dbfs, ApiService
 from dataclasses import dataclass
 import pytest
 from unittest.mock import patch, mock_open
@@ -31,14 +28,14 @@ def config():
 @pytest.fixture
 def api_service():
 
-    api_service = ApiUtils.ApiService(config.config)
+    api_service = ApiService.ApiService(config.config)
     return api_service
 
 
 @pytest.fixture
 def api_utils_mock(mocker, config, api_service):
 
-    mocker.patch.object(ApiUtils, "API_VERSION", config.version)
+    mocker.patch.object(ApiService, "API_VERSION", config.version)
     mocker.patch.object(Dbfs, "_api_service", api_service)
 
 
