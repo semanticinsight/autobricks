@@ -5,6 +5,27 @@ Loads the configuration from environment variables.
 
 """
 
+_default_schema = {
+    "type": "object",
+    "properties": {
+        "auth_type": {
+            "type": "string",
+            "enum": [
+                    "USER", 
+                    "SERVICE_PRINCIPLE",
+                    "SERVICE_PRINCIPLE_MGMT_ENDPOINT",
+                    "SERVICE_PRINCIPLE_ADAL",
+                    "SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL"
+                ]
+            },
+        "databricks_api_host": {"type": "string"},
+    },
+    "required": [
+        "auth_type", 
+        "databricks_api_host"
+    ]
+}
+
 _user_schema = {
     "type": "object",
     "properties": {
@@ -12,6 +33,11 @@ _user_schema = {
         "dbutilstoken": {"type": "string"},
         "databricks_api_host": {"type": "string"},
     },
+    "required": [
+        "auth_type", 
+        "dbutilstoken", 
+        "databricks_api_host"
+    ]
 }
 
 _sp_schema = {
@@ -23,6 +49,13 @@ _sp_schema = {
         "ad_resource": {"type": "string"},
         "databricks_api_host": {"type": "string"},
     },
+    "required": [
+        "auth_type", 
+        "sp_client_id", 
+        "sp_client_secret",
+        "ad_resource",
+        "databricks_api_host"
+    ]
 }
 
 _spme_schema = {
@@ -39,6 +72,18 @@ _spme_schema = {
         "subscription_id": {"type": "string"},
         "databricks_api_host": {"type": "string"},
     },
+    "required": [
+        "auth_type", 
+        "sp_client_id", 
+        "sp_client_secret",
+        "ad_resource",
+        "tenant_id",
+        "mgmt_resource_endpoint",
+        "workspace_name",
+        "resource_group",
+        "subscription_id",
+        "databricks_api_host"
+    ]
 }
 
 config = {
