@@ -39,7 +39,8 @@ setup(
     packages=["autobricks"],
     install_requires=[
           'requests',
-          'PyYAML'
+          'PyYAML',
+          'adal'
       ],
     zip_safe=False
 )
