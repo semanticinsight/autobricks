@@ -28,13 +28,13 @@ class ApiService:
         url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
         if query:
             url = f"{url}?{query}"
-        response = _base_api_get(url=url, headers=self._headers, data=data)
+        response = _base_api_get(url=url, headers=self._headers, json=data)
 
         return response.json()
 
     def api_post(self, api: str, function: str, data: dict):
 
         url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
-        response = _base_api_post(url=url, headers=self._headers, data=data)
+        response = _base_api_post(url=url, headers=self._headers, json=data)
 
         return response.json()

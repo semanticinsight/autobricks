@@ -11,12 +11,12 @@ logger = logging.getLogger(f"autobricks.ApiUtils")
 
 
 def base_api_get(
-    url: str, headers: dict, data: Union[dict, str] = None, query: str = None
+    url: str, headers: dict,  json: dict = None, data: dict = None, query: str = None
 ):
 
     if query:
         url = f"{url}?{query}"
-    response = requests.get(url=url, headers=headers, json=data)
+    response = requests.get(url=url, headers=headers, json=json, data=data)
 
     try:
         response.raise_for_status()
@@ -30,9 +30,9 @@ def base_api_get(
     return response
 
 
-def base_api_post(url: str, headers: dict, data: Union[str, dict]):
+def base_api_post(url: str, headers: dict, json: dict = None, data: dict = None):
 
-    response = requests.post(url=url, headers=headers, json=data)
+    response = requests.post(url=url, headers=headers, json=json, data=data)
 
     try:
         response.raise_for_status()

@@ -56,7 +56,7 @@ class SPAuth(Auth):
             headers=self._authority_headers,
             data=self._authority_data,
         )
-        self.bearer_token = response.json()["accessToken"]
+        self.bearer_token = response.json()["access_token"]
 
     def get_headers(self):
         headers = {"Authorization": f"Bearer {self.bearer_token}"}
@@ -81,7 +81,7 @@ class SPMgmtEndpointAuth(SPAuth):
             headers=self._authority_headers,
             data=self._authority_data,
         )
-        self.mgmt_access_token = response.json()["accessToken"]
+        self.mgmt_access_token = response.json()["access_token"]
 
     def get_headers(self):
 
