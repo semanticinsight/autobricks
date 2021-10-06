@@ -1,9 +1,7 @@
-import requests
-from requests.exceptions import HTTPError
 import logging
-from typing import Union
 from .AuthFactory import auth_factory, AuthenticationType
 from .Auth import Auth
+from .BaseApi import base_api_get as _base_api_get, base_api_post as _base_api_post
 
 
 logging.basicConfig(
@@ -13,42 +11,6 @@ logger = logging.getLogger(f"autobricks.ApiUtils")
 
 
 API_VERSION = "2.0"
-
-
-def base_api_get(
-    url: str, headers: dict, data: Union[dict, str] = None, query: str = None
-):
-
-    if query:
-        url = f"{url}?{query}"
-    response = requests.get(url=url, headers=headers, json=data)
-
-    try:
-        response.raise_for_status()
-
-    except HTTPError as e:
-
-        msg = f"{e.response.status_code} error at {url} {e.response.text}"
-        logger.error(msg)
-        raise e
-
-    return response
-
-
-def base_api_post(url: str, headers: dict, data: Union[str, dict]):
-
-    response = requests.post(url=url, headers=headers, json=data)
-
-    try:
-        response.raise_for_status()
-
-    except HTTPError as e:
-
-        msg = f"{e.response.status_code} error at {url} {e.response.text}"
-        logger.error(msg)
-        raise e
-
-    return response
 
 
 class ApiService:
@@ -66,13 +28,13 @@ class ApiService:
         url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
         if query:
             url = f"{url}?{query}"
-        response = base_api_get(url=url, headers=self._headers, data=data)
+        response = _base_api_get(url=url, headers=self._headers, data=data)
 
         return response.json()
 
     def api_post(self, api: str, function: str, data: dict):
 
         url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
-        response = base_api_post(url=url, headers=self._headers, data=data)
+        response = _base_api_post(url=url, headers=self._headers, data=data)
 
         return response.json()

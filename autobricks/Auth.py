@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 import adal
-from ApiService import base_api_get
+from .BaseApi import base_api_get as _api_get
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -24,7 +24,10 @@ class Auth(ABC):
 class UserAuth(Auth):
     def __init__(self, parameters: dict):
 
-        self.bearer_token = parameters["dbutilstoken"]
+        try:
+            self.bearer_token = parameters["dbutilstoken"]
+        except KeyError as e:
+            raise KeyError("dbutilstoken key not found in UserAuth parameters")
 
     def get_headers(self):
         headers = {"Authorization": f"Bearer {self.bearer_token}"}
@@ -48,7 +51,7 @@ class SPAuth(Auth):
 
         # get AD token
         self._authority_data["resource"] = self.ad_resource
-        response = base_api_get(
+        response = _api_get(
             url=self._authority_url,
             headers=self._authority_headers,
             data=self._authority_data,
@@ -73,7 +76,7 @@ class SPMgmtEndpointAuth(SPAuth):
         self.subscription_id = parameters["subscription_id"]
 
         self._authority_data["resource"] = self.mgmt_resource_endpoint
-        response = base_api_get(
+        response = _api_get(
             url=self._authority_url,
             headers=self._authority_headers,
             data=self._authority_data,

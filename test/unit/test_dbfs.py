@@ -1,7 +1,7 @@
 
 import base64
 from autobricks import Configuration
-from autobricks import Dbfs, ApiService
+from autobricks import Dbfs, ApiService, BaseApi
 from dataclasses import dataclass
 import pytest
 from unittest.mock import patch, mock_open
