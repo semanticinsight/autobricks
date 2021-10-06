@@ -44,9 +44,15 @@ class SPAuth(Auth):
         self.tenant_id = parameters["tenant_id"]
         self._authority_url = f"https://{_AUT_DNS}/{self.tenant_id}/oauth2/token"
         self._authority_headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        self._authority_data = {
+            "grant_type": "client_credentials",
+            "client_id": self.sp_client_id,
+            "client_secret": self.sp_client_secret
+        }
 
         # get AD token
-        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self.ad_resource)
+        self._authority_data["resource"] = self.ad_resource
+        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self._authority_data)
         self.bearer_token = response.json()["accessToken"]
 
 
@@ -69,7 +75,8 @@ class SPMgmtEndpointAuth(SPAuth):
         self.resource_group = parameters["resource_group"]
         self.subscription_id = parameters["subscription_id"]
 
-        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self.mgmt_resource_endpoint)
+        self._authority_data["resource"] = self.mgmt_resource_endpoint
+        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self._authority_data)
         self.mgmt_access_token = response.json()["accessToken"]
 
 
