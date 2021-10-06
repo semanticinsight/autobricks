@@ -38,7 +38,7 @@ class SPAuth(Auth):
         self.sp_client_secret = parameters["sp_client_secret"]
         self.ad_resource = parameters["ad_resource"]
         self.tenant_id = parameters["tenant_id"]
-        self._authority_url = f"https://{_AUT_DNS}/{self.tenant_id}/oauth2/token"
+        self._authority_url = f"https://{_AUTH_DNS}/{self.tenant_id}/oauth2/token"
         self._authority_headers = {"Content-Type": "application/x-www-form-urlencoded"}
         self._authority_data = {
             "grant_type": "client_credentials",
@@ -99,7 +99,7 @@ class SPAdalAuth(Auth):
         self.ad_resource = parameters["ad_resource"]
         self.tenant_id = parameters["tenant_id"]
 
-        self._authority_url = f"https://{_AUT_DNS}/{self.tenant_id}"
+        self._authority_url = f"https://{_AUTH_DNS}/{self.tenant_id}"
 
         # get AD token
         context = adal.AuthenticationContext(self._authority_url)
