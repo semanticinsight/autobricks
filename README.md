@@ -23,7 +23,10 @@ Azure databricks allows the following authentication methods:
 - [Azure Service Principal](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/)
 - [Azure Service Principal over the Management End Point](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/)
 
-This library supports all by simply setting the following environment variables as required for each method:
+This library supports all by simply setting the following environment variables as required for each method. 
+The AUTH_TYPE sets the authorisation mode and therefore what configuration to expect. 
+Ensure that sensitive values are managed using secret redaction e.g. key vault or some other method.
+
 
 | Variable              | User PAT | SP                  | SP on Mgmt Endpoint               |
 |-----------------------|----------|---------------------|-----------------------------------|
@@ -39,6 +42,28 @@ This library supports all by simply setting the following environment variables 
 |SUBSCRIPTION_ID        |          |                     | &#10003;                          |
 |DATABRICKS_API_HOST    | &#10003; | &#10003;            | &#10003;                          |
 
+Also note that library will use simple rest calls to retrieve tokens. An alternative approach 
+is to leverage the adal library to authenticate. If you wish to authenticate over [adal](https://pypi.org/project/adal/) please
+refer to following settings:
+
+| Variable              | SP                     | SP on Mgmt Endpoint                  |
+|-----------------------|------------------------|--------------------------------------|
+|AUTH_TYPE              | SERVICE_PRINCIPLE_ADAL | SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL |
+|DBUTILSTOKEN           | &#10003;               | &#10003;                             |
+|TENANT_ID              | &#10003;               | &#10003;                             |
+|SP_CLIENT_ID           | &#10003;               | &#10003;                             |
+|SP_CLIENT_SECRET       | &#10003;               | &#10003;                             |
+|AD_RESOURCE            | &#10003;               | &#10003;                             |
+|MGMT_RESOURCE_ENDPOINT |                        | &#10003;                             |
+|WORKSPACE_NAME         |                        | &#10003;                             | 
+|RESOURCE_GROUP         |                        | &#10003;                             |
+|SUBSCRIPTION_ID        |                        | &#10003;                             |
+|DATABRICKS_API_HOST    | &#10003;               | &#10003;                             |
+
+When deciding between [adal](https://pypi.org/project/adal/) and rest calls the following is relevant:
+- [adal](https://pypi.org/project/adal/) may not work in Azure DevOps in highly restricted private network setups
+- Rest calls are more simple however if MS makes any changes to the API's the [adal](https://pypi.org/project/adal/) isn't there to abstract those changes.
+
 The following variables will default.
 
 | Variable              | Default                              |
@@ -47,16 +72,15 @@ The following variables will default.
 |AD_RESOURCE            | 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d |
 |MGMT_RESOURCE_ENDPOINT | https://management.core.windows.net/ |
 
-
-
-NOTE: AUTH_TYPE sets the authorisation mode and therefore what configuration to expect. Ensure that sensitive values are managed using secret redaction e.g. key vault or some other method.
-
-The application requires the following environment variables specific the databricks workspace and authentication method that you're using for testing, development and deployment. Substitute your own values between the angled brackets:
+For testing, development and deployment and deployment substitute your own 
+values between the angled brackets:
 
 ```
 export AUTH_TYPE=USER
 # export AUTH_TYPE=SERVICE_PRINCIPLE
 # export AUTH_TYPE=SERVICE_PRINCIPLE_MGMT_ENDPOINT
+# export AUTH_TYPE=SERVICE_PRINCIPLE_ADAL
+# export AUTH_TYPE=SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL
 
 # required for AUTH_TYPE=USER
 export DBUTILSTOKEN="<my_token>"
@@ -76,7 +100,8 @@ export DATABRICKS_API_HOST=<my_databricks_host_url>
 
 ```
 
-Exporting variables doesn't make for a great development experience so I recommend using the environment manager tools of your editor and for testing create a ./pytest.ini that looks like this:
+Exporting variables doesn't make for a great development experience so I recommend using the environment manager 
+tools of your editor and for testing create a ./pytest.ini that looks like this:
 
 ```
 [pytest]

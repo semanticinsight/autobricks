@@ -2,14 +2,18 @@ from enum import Enum
 from .Auth import (
     UserAuth,
     SPAuth,
-    SPMgmtEndpointAuth
+    SPMgmtEndpointAuth,
+    SPAdalAuth,
+    SPMgmtEndpointAdalAuth
 )
 
 class AuthenticationType(Enum):
 
     USER = 1,
     SERVICE_PRINCIPLE = 2,
-    SERVICE_PRINCIPLE_MGMT_ENDPOINT = 3
+    SERVICE_PRINCIPLE_MGMT_ENDPOINT = 3,
+    SERVICE_PRINCIPLE_ADAL = 4,
+    SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL = 5
 
 
 class AuthFactory:
@@ -33,3 +37,5 @@ auth_factory = AuthFactory()
 auth_factory.register_format(AuthenticationType.USER, UserAuth)
 auth_factory.register_format(AuthenticationType.SERVICE_PRINCIPLE, SPAuth)
 auth_factory.register_format(AuthenticationType.SERVICE_PRINCIPLE_MGMT_ENDPOINT, SPMgmtEndpointAuth)
+auth_factory.register_format(AuthenticationType.SERVICE_PRINCIPLE_ADAL, SPAdalAuth)
+auth_factory.register_format(AuthenticationType.SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL, SPMgmtEndpointAdalAuth)
