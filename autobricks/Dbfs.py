@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 _api_service = ApiService(Configuration.config)
 
+
 def dbfs_upload(from_path: str, to_path: str, overwrite: bool = True):
 
     # Create a handle that will be used to add blocks
@@ -91,11 +92,9 @@ def dbfs_download(from_path: str, to_path: str):
             data = base64_decode(data)
 
             file.write(data)
-            
+
             if bytes_read < read_chunk:
                 break
-
-            
 
     logger.info(f"Finished downloading {str(total_bytes)} bytes")
 

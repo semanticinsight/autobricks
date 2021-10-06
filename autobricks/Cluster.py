@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 _api_service = ApiService(Configuration.config)
 
+
 class ClusterState(Enum):
     PENDING = 1
     RUNNING = 2
@@ -188,7 +189,7 @@ def cluster_delete_clusters(clusters: list):
         cluster_action(c, ClusterAction.DELETE)
 
 
-def cluster_list()->dict:
+def cluster_list() -> dict:
 
     response = _api_service.api_get(endpoint, "list")
     if response == {}:

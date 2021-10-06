@@ -1,11 +1,11 @@
 from .ApiService import ApiService
 
 from .DecodeUtils import (
-    base64_encode, 
-    base64_decode, 
+    base64_encode,
+    base64_decode,
     format_path_for_os,
     format_path_for,
-    OS
+    OS,
 )
 from . import Configuration
 import os
@@ -20,6 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 _api_service = ApiService(Configuration.config)
+
 
 class DeployMode(Enum):
     DEFAULT = 1

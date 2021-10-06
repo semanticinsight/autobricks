@@ -6,6 +6,7 @@ import os
 
 _api_service = ApiService(Configuration.config)
 
+
 def library_all_cluster_statuses():
 
     return _api_service.api_get("libraries", "all-cluster-statuses")

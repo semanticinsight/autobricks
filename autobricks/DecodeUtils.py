@@ -1,4 +1,3 @@
-
 import base64
 import sys
 from enum import Enum
@@ -16,6 +15,7 @@ class OS(Enum):
     WINDOWS = 1
     LINUX = 2
     MAC = 3
+
 
 def base64_decode(base64_string: str, encoding: str = "utf-8"):
 

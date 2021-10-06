@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 import logging
 import adal
@@ -9,12 +8,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.ApiUtils")
 
-_AUT_DNS="login.microsoftonline.com"
+_AUT_DNS = "login.microsoftonline.com"
+
 
 class Auth(ABC):
-
     @abstractmethod
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
         pass
 
     @abstractmethod
@@ -23,8 +22,7 @@ class Auth(ABC):
 
 
 class UserAuth(Auth):
-
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
 
         self.bearer_token = parameters["dbutilstoken"]
 
@@ -33,10 +31,8 @@ class UserAuth(Auth):
         return headers
 
 
-
 class SPAuth(Auth):
-
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
 
         self.sp_client_id = parameters["sp_client_id"]
         self.sp_client_secret = parameters["sp_client_secret"]
@@ -47,24 +43,25 @@ class SPAuth(Auth):
         self._authority_data = {
             "grant_type": "client_credentials",
             "client_id": self.sp_client_id,
-            "client_secret": self.sp_client_secret
+            "client_secret": self.sp_client_secret,
         }
 
         # get AD token
         self._authority_data["resource"] = self.ad_resource
-        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self._authority_data)
+        response = base_api_get(
+            url=self._authority_url,
+            headers=self._authority_headers,
+            data=self._authority_data,
+        )
         self.bearer_token = response.json()["accessToken"]
-
 
     def get_headers(self):
         headers = {"Authorization": f"Bearer {self.bearer_token}"}
         return headers
 
 
-
 class SPMgmtEndpointAuth(SPAuth):
-
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
 
         # get AD token
         super().__init__(parameters)
@@ -76,24 +73,26 @@ class SPMgmtEndpointAuth(SPAuth):
         self.subscription_id = parameters["subscription_id"]
 
         self._authority_data["resource"] = self.mgmt_resource_endpoint
-        response = base_api_get(url=self._authority_url, headers=self._authority_headers, data=self._authority_data)
+        response = base_api_get(
+            url=self._authority_url,
+            headers=self._authority_headers,
+            data=self._authority_data,
+        )
         self.mgmt_access_token = response.json()["accessToken"]
-
 
     def get_headers(self):
 
-        url=f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
+        url = f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
         headers = {
             "Authorization": f"Bearer {self.bearer_token}",
             "X-Databricks-Azure-SP-Management-Token": self.mgmt_access_token,
-            "X-Databricks-Azure-Workspace-Resource-Id": url
+            "X-Databricks-Azure-Workspace-Resource-Id": url,
         }
         return headers
 
 
 class SPAdalAuth(Auth):
-
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
 
         self.sp_client_id = parameters["sp_client_id"]
         self.sp_client_secret = parameters["sp_client_secret"]
@@ -107,7 +106,7 @@ class SPAdalAuth(Auth):
         response = context.acquire_token_with_client_credentials(
             resource=self.ad_resource,
             client_id=self.sp_client_id,
-            client_secret=self.sp_client_secret
+            client_secret=self.sp_client_secret,
         )
         self.bearer_token = response["accessToken"]
 
@@ -117,8 +116,7 @@ class SPAdalAuth(Auth):
 
 
 class SPMgmtEndpointAdalAuth(SPAdalAuth):
-
-    def __init__(self, parameters:dict):
+    def __init__(self, parameters: dict):
 
         # get AD token
         super().__init__(parameters)
@@ -132,20 +130,16 @@ class SPMgmtEndpointAdalAuth(SPAdalAuth):
         response = context.acquire_token_with_client_credentials(
             resource=self.mgmt_resource_endpoint,
             client_id=self.sp_client_id,
-            client_secret=self.sp_client_secret
+            client_secret=self.sp_client_secret,
         )
         self.mgmt_access_token = response["accessToken"]
 
-
     def get_headers(self):
 
-        url=f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
+        url = f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
         headers = {
             "Authorization": f"Bearer {self.bearer_token}",
             "X-Databricks-Azure-SP-Management-Token": self.mgmt_access_token,
-            "X-Databricks-Azure-Workspace-Resource-Id": url
+            "X-Databricks-Azure-Workspace-Resource-Id": url,
         }
         return headers
-
-
-
