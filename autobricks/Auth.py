@@ -8,7 +8,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(f"autobricks.ApiUtils")
 
-_AUT_DNS = "login.microsoftonline.com"
+_AUTH_DNS = "login.microsoftonline.com"
 
 
 class Auth(ABC):
