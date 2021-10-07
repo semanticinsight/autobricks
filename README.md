@@ -115,6 +115,31 @@ env =
 
 Git ignore already contains an exclusion for pytest.ini
 
+Also for convenience here is a yaml template for docker and build pipelines:
+
+```
+env:
+    # AUTH_TYPE: USER
+    AUTH_TYPE: SERVICE_PRINCIPLE
+    # AUTH_TYPE: SERVICE_PRINCIPLE_MGMT_ENDPOINT
+    # AUTH_TYPE: SERVICE_PRINCIPLE_ADAL
+    # AUTH_TYPE: SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL
+
+    # required for AUTH_TYPE=USER
+    # DBUTILSTOKEN: <my_token>
+
+    # required for AUTH_TYPE=SERVICE_PRINCIPLE
+    TENANT_ID: <my_tenant_id>
+    SP_CLIENT_ID: <my_service_principal_client_id>
+    SP_CLIENT_SECRET: <my_service_principal_secret>
+
+    # required for AUTH_TYPE in (SERVICE_PRINCIPLE or SERVICE_PRINCIPLE_MGMT_ENDPOINT)
+    WORKSPACE_NAME: my_dbx_workspacename
+    RESOURCE_GROUP: my_dbx_resourcegroup
+    SUBSCRIPTION_ID: <my_subscription_id>
+    DATABRICKS_API_HOST: <my_databricks_host_url>
+
+```
 
 # Build
 
