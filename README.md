@@ -126,18 +126,18 @@ env:
     # AUTH_TYPE: SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL
 
     # required for AUTH_TYPE=USER
-    # DBUTILSTOKEN: <my_token>
+    # DBUTILSTOKEN: $(token)
 
     # required for AUTH_TYPE=SERVICE_PRINCIPLE
-    TENANT_ID: <my_tenant_id>
-    SP_CLIENT_ID: <my_service_principal_client_id>
-    SP_CLIENT_SECRET: <my_service_principal_secret>
+    TENANT_ID: $(tenant_id)
+    SP_CLIENT_ID: $(service_principal_client_id)
+    SP_CLIENT_SECRET: $(service_principal_secret)
 
     # required for AUTH_TYPE in (SERVICE_PRINCIPLE or SERVICE_PRINCIPLE_MGMT_ENDPOINT)
-    WORKSPACE_NAME: my_dbx_workspacename
-    RESOURCE_GROUP: my_dbx_resourcegroup
-    SUBSCRIPTION_ID: <my_subscription_id>
-    DATABRICKS_API_HOST: <my_databricks_host_url>
+    WORKSPACE_NAME: $(dbx_workspace_name)
+    RESOURCE_GROUP: $(dbx_resource_group)
+    SUBSCRIPTION_ID: $(subscription_id)
+    DATABRICKS_API_HOST: $(databricks_host_url)
 
 ```
 
