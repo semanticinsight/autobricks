@@ -23,7 +23,7 @@ Ensure that sensitive values are managed using secret redaction e.g. key vault o
 
 | Variable              | User PAT | SP                  | SP on Mgmt Endpoint               |
 |-----------------------|----------|---------------------|-----------------------------------|
-|AUTH_TYPE              | USER     | SERVICE_PRINCIPLE   | SERVICE_PRINCIPLE_MGMT_ENDPOINT   |
+|AUTH_TYPE              | USER     | SERVICE_PRINCIPAL   | SERVICE_PRINCIPAL_MGMT_ENDPOINT   |
 |DBUTILSTOKEN           | &#10003; | &#10003;            | &#10003;                          |
 |TENANT_ID              |          | &#10003;            | &#10003;                          |
 |SP_CLIENT_ID           |          | &#10003;            | &#10003;                          |
@@ -41,7 +41,7 @@ refer to following settings:
 
 | Variable              | SP                     | SP on Mgmt Endpoint                  |
 |-----------------------|------------------------|--------------------------------------|
-|AUTH_TYPE              | SERVICE_PRINCIPLE_ADAL | SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL |
+|AUTH_TYPE              | SERVICE_PRINCIPAL_ADAL | SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL |
 |DBUTILSTOKEN           | &#10003;               | &#10003;                             |
 |TENANT_ID              | &#10003;               | &#10003;                             |
 |SP_CLIENT_ID           | &#10003;               | &#10003;                             |
@@ -61,7 +61,7 @@ The following variables will default.
 
 | Variable              | Default                              |
 |-----------------------|--------------------------------------|
-|AUTH_TYPE              | SERVICE_PRINCIPLE                    |
+|AUTH_TYPE              | SERVICE_PRINCIPALs                    |
 |AD_RESOURCE            | 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d |
 |MGMT_RESOURCE_ENDPOINT | https://management.core.windows.net/ |
 

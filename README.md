@@ -30,7 +30,7 @@ Ensure that sensitive values are managed using secret redaction e.g. key vault o
 
 | Variable              | User PAT | SP                  | SP on Mgmt Endpoint               |
 |-----------------------|----------|---------------------|-----------------------------------|
-|AUTH_TYPE              | USER     | SERVICE_PRINCIPLE   | SERVICE_PRINCIPLE_MGMT_ENDPOINT   |
+|AUTH_TYPE              | USER     | SERVICE_PRINCIPAL   | SERVICE_PRINCIPAL_MGMT_ENDPOINT   |
 |DBUTILSTOKEN           | &#10003; | &#10003;            | &#10003;                          |
 |TENANT_ID              |          | &#10003;            | &#10003;                          |
 |SP_CLIENT_ID           |          | &#10003;            | &#10003;                          |
@@ -48,7 +48,7 @@ refer to following settings:
 
 | Variable              | SP                     | SP on Mgmt Endpoint                  |
 |-----------------------|------------------------|--------------------------------------|
-|AUTH_TYPE              | SERVICE_PRINCIPLE_ADAL | SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL |
+|AUTH_TYPE              | SERVICE_PRINCIPAL_ADAL | SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL |
 |DBUTILSTOKEN           | &#10003;               | &#10003;                             |
 |TENANT_ID              | &#10003;               | &#10003;                             |
 |SP_CLIENT_ID           | &#10003;               | &#10003;                             |
@@ -68,7 +68,7 @@ The following variables will default.
 
 | Variable              | Default                              |
 |-----------------------|--------------------------------------|
-|AUTH_TYPE              | SERVICE_PRINCIPLE                    |
+|AUTH_TYPE              | SERVICE_PRINCIPAL                    |
 |AD_RESOURCE            | 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d |
 |MGMT_RESOURCE_ENDPOINT | https://management.core.windows.net/ |
 
@@ -77,21 +77,21 @@ values between the angled brackets:
 
 ```
 export AUTH_TYPE=USER
-# export AUTH_TYPE=SERVICE_PRINCIPLE
-# export AUTH_TYPE=SERVICE_PRINCIPLE_MGMT_ENDPOINT
-# export AUTH_TYPE=SERVICE_PRINCIPLE_ADAL
-# export AUTH_TYPE=SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL
+# export AUTH_TYPE=SERVICE_PRINCIPAL
+# export AUTH_TYPE=SERVICE_PRINCIPAL_MGMT_ENDPOINT
+# export AUTH_TYPE=SERVICE_PRINCIPAL_ADAL
+# export AUTH_TYPE=SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL
 
 # required for AUTH_TYPE=USER
 export DBUTILSTOKEN="<my_token>"
 
-# required for AUTH_TYPE=SERVICE_PRINCIPLE
+# required for AUTH_TYPE=SERVICE_PRINCIPAL
 export TENANT_ID="<my_tenant_id>"
 export SP_CLIENT_ID=<my_service_principal_client_id>
 export SP_CLIENT_SECRET=<my_service_principal_secret>
 export AD_RESOURCE=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d
 
-# required for AUTH_TYPE in (SERVICE_PRINCIPLE or SERVICE_PRINCIPLE_MGMT_ENDPOINT)
+# required for AUTH_TYPE in (SERVICE_PRINCIPAL or SERVICE_PRINCIPAL_MGMT_ENDPOINT)
 export MGMT_RESOURCE_ENDPOINT=https://management.core.windows.net/
 export WORKSPACE_NAME=my_dbx_workspacename
 export RESOURCE_GROUP=my_dbx_resourcegroup
@@ -120,20 +120,20 @@ Also for convenience here is a yaml template for docker and build pipelines:
 ```
 env:
     # AUTH_TYPE: USER
-    AUTH_TYPE: SERVICE_PRINCIPLE
-    # AUTH_TYPE: SERVICE_PRINCIPLE_MGMT_ENDPOINT
-    # AUTH_TYPE: SERVICE_PRINCIPLE_ADAL
-    # AUTH_TYPE: SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL
+    AUTH_TYPE: SERVICE_PRINCIPAL
+    # AUTH_TYPE: SERVICE_PRINCIPAL_MGMT_ENDPOINT
+    # AUTH_TYPE: SERVICE_PRINCIPAL_ADAL
+    # AUTH_TYPE: SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL
 
     # required for AUTH_TYPE=USER
     # DBUTILSTOKEN: $(token)
 
-    # required for AUTH_TYPE=SERVICE_PRINCIPLE
+    # required for AUTH_TYPE=SERVICE_PRINCIPAL
     TENANT_ID: $(tenant_id)
     SP_CLIENT_ID: $(service_principal_client_id)
     SP_CLIENT_SECRET: $(service_principal_secret)
 
-    # required for AUTH_TYPE in (SERVICE_PRINCIPLE or SERVICE_PRINCIPLE_MGMT_ENDPOINT)
+    # required for AUTH_TYPE in (SERVICE_PRINCIPAL or SERVICE_PRINCIPAL_MGMT_ENDPOINT)
     WORKSPACE_NAME: $(dbx_workspace_name)
     RESOURCE_GROUP: $(dbx_resource_group)
     SUBSCRIPTION_ID: $(subscription_id)

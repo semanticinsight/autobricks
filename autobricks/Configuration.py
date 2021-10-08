@@ -12,10 +12,10 @@ _default_schema = {
             "type": "string",
             "enum": [
                     "USER", 
-                    "SERVICE_PRINCIPLE",
-                    "SERVICE_PRINCIPLE_MGMT_ENDPOINT",
-                    "SERVICE_PRINCIPLE_ADAL",
-                    "SERVICE_PRINCIPLE_MGMT_ENDPOINT_ADAL"
+                    "SERVICE_PRINCIPAL",
+                    "SERVICE_PRINCIPAL_MGMT_ENDPOINT",
+                    "SERVICE_PRINCIPAL_ADAL",
+                    "SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL"
                 ]
             },
         "databricks_api_host": {"type": "string"},
@@ -98,6 +98,6 @@ config = {
     "workspace_name": os.getenv("WORKSPACE_NAME"),
     "resource_group": os.getenv("RESOURCE_GROUP"),
     "subscription_id": os.getenv("SUBSCRIPTION_ID"),
-    "auth_type": os.getenv("AUTH_TYPE", "SERVICE_PRINCIPLE"),
+    "auth_type": os.getenv("AUTH_TYPE", "SERVICE_PRINCIPAL"),
     "databricks_api_host": os.getenv("DATABRICKS_API_HOST"),
 }
