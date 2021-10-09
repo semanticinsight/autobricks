@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import adal
 from .BaseApi import base_api_get as _api_get
-from autobricks import AutobricksLogging
+from . import AutobricksLogging
 
 logger = AutobricksLogging.get_logger(__name__)
 

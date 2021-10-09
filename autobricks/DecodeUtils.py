@@ -3,7 +3,7 @@ import sys
 from enum import Enum
 
 
-from autobricks import AutobricksLogging
+from . import AutobricksLogging
 
 logger = AutobricksLogging.get_logger(__name__)
 

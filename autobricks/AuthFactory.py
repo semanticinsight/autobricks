@@ -6,7 +6,8 @@ from .Auth import (
     SPAdalAuth,
     SPMgmtEndpointAdalAuth,
 )
-from autobricks import AutobricksLogging
+from . import AutobricksLogging
+from .Exceptions import AutbricksAuthTypeNotRegistered
 
 logger = AutobricksLogging.get_logger(__name__)
 
@@ -30,8 +31,11 @@ class AuthFactory:
     def get_auth(self, auth_type: AuthenticationType, parameters: dict):
 
         creator = self._creators.get(auth_type)
+
         if not creator:
-            raise ValueError(auth_type)
+            e = AutbricksAuthTypeNotRegistered(auth_type)
+            logger.error(e.message)
+            raise e
 
         return creator(parameters)
 

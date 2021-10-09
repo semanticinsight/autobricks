@@ -6,7 +6,7 @@ from ApiService import ApiService
 from . import Configuration
 from uuid import UUID
 import time
-from autobricks import AutobricksLogging
+from . import AutobricksLogging
 
 logger = AutobricksLogging.get_logger(__name__)
 

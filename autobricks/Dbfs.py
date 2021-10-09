@@ -3,7 +3,7 @@ from .DecodeUtils import base64_decode, format_path_for_os
 from . import Configuration
 import base64
 import os, fnmatch
-from autobricks import AutobricksLogging
+from . import AutobricksLogging
 
 logger = AutobricksLogging.get_logger(__name__)
 
