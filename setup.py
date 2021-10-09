@@ -36,7 +36,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["autobricks"],
+    packages=["autobricks","api_services"],
     install_requires=[
           'requests',
           'PyYAML',
