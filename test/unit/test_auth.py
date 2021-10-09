@@ -1,12 +1,12 @@
 import sys
 from pytest_mock import mocker
 from unittest.mock import Mock
-from autobricks.Auth import (
+from autobricks.api_service._auth import (
     UserAuth,
     SPAuth,
     SPMgmtEndpointAuth
 )
-from autobricks import Configuration
+from autobricks.api_service import configuration
 from dataclasses import dataclass
 import pytest
 
@@ -24,8 +24,8 @@ def config():
         query: str
 
     return Config(
-        config=Configuration.config,
-        host = Configuration.config["databricks_api_host"],
+        config=configuration,
+        host = configuration["databricks_api_host"],
         version="2.0",
         function="testfunc",
         endpoint="endpoint",

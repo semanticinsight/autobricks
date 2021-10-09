@@ -1,9 +1,8 @@
 import requests
 from requests.exceptions import HTTPError
-import logging
-from . import AutobricksLogging
+from . import autobricks_logging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 def base_api_get(

@@ -1,7 +1,7 @@
 import os
-from . import AutobricksLogging
+from . import autobricks_logging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 """
 Loads the configuration from environment variables.
@@ -82,7 +82,7 @@ _spme_schema = {
     ],
 }
 
-config = {
+configuration = {
     "dbutilstoken": os.getenv("DBUTILSTOKEN"),
     "sp_client_id": os.getenv("SP_CLIENT_ID"),
     "sp_client_secret": os.getenv("SP_CLIENT_SECRET"),

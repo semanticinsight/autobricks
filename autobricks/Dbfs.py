@@ -1,16 +1,14 @@
-from .ApiService import ApiService
+from .api_service import ApiService, autobricks_logging
 from .DecodeUtils import base64_decode, format_path_for_os
-from . import Configuration
 import base64
 import os, fnmatch
-from . import AutobricksLogging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "dbfs"
 
 
-_api_service = ApiService(Configuration.config)
+_api_service = ApiService()
 
 
 def dbfs_upload(from_path: str, to_path: str, overwrite: bool = True):

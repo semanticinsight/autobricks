@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
 import adal
-from .BaseApi import base_api_get as _api_get
-from . import AutobricksLogging
+from ._base_api import base_api_get as _api_get
+from . import autobricks_logging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 _AUTH_DNS = "login.microsoftonline.com"

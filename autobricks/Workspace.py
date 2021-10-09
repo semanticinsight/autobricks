@@ -1,4 +1,4 @@
-from .ApiService import ApiService
+from .api_service import ApiService, autobricks_logging
 
 from .DecodeUtils import (
     base64_encode,
@@ -7,18 +7,16 @@ from .DecodeUtils import (
     format_path_for,
     OS,
 )
-from . import Configuration
 import os
 
 from enum import Enum
-from . import AutobricksLogging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "workspace"
 
 
-_api_service = ApiService(Configuration.config)
+_api_service = ApiService()
 
 
 class DeployMode(Enum):

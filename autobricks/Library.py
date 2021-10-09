@@ -1,13 +1,11 @@
-from .ApiService import ApiService
-from . import Configuration
+from .api_service import ApiService, autobricks_logging
 from wheel_inspect import inspect_wheel
 from dataclasses import dataclass
 import os
-from . import AutobricksLogging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
-_api_service = ApiService(Configuration.config)
+_api_service = ApiService()
 
 
 def library_all_cluster_statuses():

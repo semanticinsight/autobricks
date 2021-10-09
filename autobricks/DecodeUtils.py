@@ -1,11 +1,9 @@
 import base64
 import sys
 from enum import Enum
+from .api_service import autobricks_logging
 
-
-from . import AutobricksLogging
-
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 class OS(Enum):

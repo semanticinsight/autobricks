@@ -2,17 +2,15 @@ from .DecodeUtils import (
     format_path_for,
     OS as OsEnum,
 )
-from ApiService import ApiService
-from . import Configuration
+from .api_service import ApiService, autobricks_logging
 from uuid import UUID
 import time
-from . import AutobricksLogging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "jobs"
 
-_api_service = ApiService(Configuration.config)
+_api_service = ApiService()
 
 
 def job_run_get(run_id: int):

@@ -1,5 +1,5 @@
-from autobricks import ApiService
-from autobricks import Configuration
+
+from autobricks.api_service import ApiService, configuration
 from dataclasses import dataclass
 import pytest
 
@@ -17,8 +17,8 @@ def config():
         query: str
 
     return Config(
-        config=Configuration.config,
-        host = Configuration.config["databricks_api_host"],
+        config=configuration,
+        host = configuration["databricks_api_host"],
         version="2.0",
         function="testfunc",
         endpoint="endpoint",
@@ -30,14 +30,14 @@ def config():
 @pytest.fixture
 def api_utils_mock(mocker, config):
 
-    mocker.patch.object(ApiService, "API_VERSION", config.version)
+    mocker.patch.object(api_service, "API_VERSION", config.version)
 
 
 @pytest.fixture
 def api_service(config):
 
-    api_service = ApiService.ApiService(config.config)
-    return api_service
+    api_svc = ApiService(config.config)
+    return api_svc
 
 
 def test_get_data_query(requests_mock, config, api_service):

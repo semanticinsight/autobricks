@@ -1,17 +1,13 @@
 import enum
 import json
 
+
 class AutobricksResponseJsonError(Exception):
-    def __init__(
-        self,
-        verb:str,
-        url:str,
-        data:dict,
-        response_text: str
-    ):
+    def __init__(self, verb: str, url: str, data: dict, response_text: str):
         _data = json.dumps(data, indent=4)
         self.message = f"HTTP {verb} response.json() from {url} failed. request_body= {_data}. response.text={response_text}"
         super().__init__(self.message)
+
 
 class AutbricksConfigurationInvalid(Exception):
     def __init__(

@@ -5,9 +5,9 @@ from wheel_inspect import inspect_wheel
 from dataclasses import dataclass
 import shutil
 import yaml
-from . import AutobricksLogging
+from .api_service import autobricks_logging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 @dataclass

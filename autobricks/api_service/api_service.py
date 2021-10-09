@@ -1,20 +1,26 @@
-from .AuthFactory import auth_factory, AuthenticationType
-from .Auth import Auth
-from .BaseApi import base_api_get as _base_api_get, base_api_post as _base_api_post
-from . import AutobricksLogging
-from .Exceptions import AutbricksConfigurationInvalid, AutobricksResponseJsonError
+from ._auth_factory import auth_factory, AuthenticationType
+from ._auth import Auth
+from ._base_api import base_api_get as _base_api_get, base_api_post as _base_api_post
+from . import autobricks_logging
+from ._exceptions import AutbricksConfigurationInvalid, AutobricksResponseJsonError
+from ._configuration import configuration
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 API_VERSION = "2.0"
 
 
 class ApiService:
-    def __init__(self, configuration: dict):
+    def __init__(self, config: dict = None):
+
+        if config:
+            _config = config
+        else:
+            _config = configuration
 
         try:
-            auth_type_str = configuration["auth_type"]
+            auth_type_str = _config["auth_type"]
         except KeyError:
             e = AutbricksConfigurationInvalid(
                 "auth_type", valid_values=AuthenticationType
@@ -23,7 +29,7 @@ class ApiService:
             raise e
 
         try:
-            self.host = configuration["databricks_api_host"]
+            self.host = _config["databricks_api_host"]
         except KeyError:
             e = AutbricksConfigurationInvalid("databricks_api_host")
             logger.error(e.message)
@@ -38,7 +44,7 @@ class ApiService:
             logger.error(e.message)
             raise e
 
-        auth: Auth = auth_factory.get_auth(auth_type, configuration)
+        auth: Auth = auth_factory.get_auth(auth_type, _config)
 
         self._headers = auth.get_headers()
 

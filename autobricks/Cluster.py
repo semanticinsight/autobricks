@@ -1,18 +1,16 @@
-from .ApiService import ApiService
-from . import Configuration
+from .api_service import ApiService, autobricks_logging
 import os
 import yaml
 from enum import Enum
 import time
-import logging
 from .Dbfs import dbfs_upload
-from . import AutobricksLogging
+from .api_service import autobricks_logging
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "clusters"
 
-_api_service = ApiService(Configuration.config)
+_api_service = ApiService()
 
 
 class ClusterState(Enum):

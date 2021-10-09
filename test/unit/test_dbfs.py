@@ -1,7 +1,8 @@
 
 import base64
-from autobricks import Configuration
-from autobricks import Dbfs, ApiService, BaseApi
+from autobricks import Dbfs
+from autobricks.api_service import ApiService, configuration
+
 from dataclasses import dataclass
 import pytest
 from unittest.mock import patch, mock_open
@@ -18,8 +19,8 @@ def config():
         endpoint: str
 
     return Config(
-        config=Configuration.config,
-        host = Configuration.config["databricks_api_host"],
+        config=configuration,
+        host = configuration["databricks_api_host"],
         version="2.0", 
         endpoint="dbfs"
     )
@@ -28,14 +29,14 @@ def config():
 @pytest.fixture
 def api_service():
 
-    api_service = ApiService.ApiService(config.config)
-    return api_service
+    api_svc = ApiService(config.config)
+    return api_svc
 
 
 @pytest.fixture
 def api_utils_mock(mocker, config, api_service):
 
-    mocker.patch.object(ApiService, "API_VERSION", config.version)
+    mocker.patch.object(api_service, "API_VERSION", config.version)
     mocker.patch.object(Dbfs, "_api_service", api_service)
 
 

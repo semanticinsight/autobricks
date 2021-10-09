@@ -1,15 +1,15 @@
 from enum import Enum
-from .Auth import (
+from ._auth import (
     UserAuth,
     SPAuth,
     SPMgmtEndpointAuth,
     SPAdalAuth,
     SPMgmtEndpointAdalAuth,
 )
-from . import AutobricksLogging
-from .Exceptions import AutbricksAuthTypeNotRegistered
+from . import autobricks_logging
+from ._exceptions import AutbricksAuthTypeNotRegistered
 
-logger = AutobricksLogging.get_logger(__name__)
+logger = autobricks_logging.get_logger(__name__)
 
 
 class AuthenticationType(Enum):
