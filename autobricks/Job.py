@@ -6,7 +6,7 @@ from .api_service import ApiService, autobricks_logging
 from uuid import UUID
 import time
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "jobs"
 
@@ -62,13 +62,13 @@ def job_run_submit(
     }
 
     if cluster_id:
-        logger.info(
+        _logger.info(
             f"Configuring job {fmt_notebook_path} to run on existing cluster {cluster_id}"
         )
         data["existing_cluster_id"] = cluster_id
 
     else:
-        logger.info(
+        _logger.info(
             f"Configuring job {fmt_notebook_path} to run on a new cluster {node_type_id}"
         )
         data["new_cluster"] = {
@@ -82,7 +82,7 @@ def job_run_submit(
     if idempotency_token:
         data["idempotency_token"] = str(idempotency_token)
 
-    logger.info(f"Submitting job for notebook {fmt_notebook_path}")
+    _logger.info(f"Submitting job for notebook {fmt_notebook_path}")
     return _api_service.api_post(endpoint, "runs/submit", data)
 
 
@@ -107,7 +107,7 @@ def job_run_notebook(
     run_id = response["run_id"]
     previous_state = {"run_id": run_id}
 
-    logger.info(f"Notebook {fmt_notebook_path} job has start on run {run_id}")
+    _logger.info(f"Notebook {fmt_notebook_path} job has start on run {run_id}")
 
     try:
         run_page_url = None
@@ -121,7 +121,7 @@ def job_run_notebook(
             run_page_url = response["run_page_url"]
 
             if state != previous_state:
-                logger.info(
+                _logger.info(
                     f"Notebook:{fmt_notebook_path} State:{life_cycle_state} Url:{run_page_url}"
                 )
                 previous_state = state
@@ -133,7 +133,7 @@ def job_run_notebook(
 
     except Exception as e:
         msg = f"Notebook:{fmt_notebook_path} State:ERROR Url:{run_page_url} Message:{str(e)}"
-        logger.error(msg)
+        _logger.error(msg)
         raise Exception(msg)
 
     return state

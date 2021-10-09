@@ -4,8 +4,9 @@ from ._base_api import base_api_get as _base_api_get, base_api_post as _base_api
 from . import autobricks_logging
 from ._exceptions import AutbricksConfigurationInvalid, AutobricksResponseJsonError
 from ._configuration import configuration
+import json
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 
 API_VERSION = "2.0"
@@ -14,10 +15,17 @@ API_VERSION = "2.0"
 class ApiService:
     def __init__(self, config: dict = None):
 
+        _logger.info("Initialising ApiService")
+
         if config:
+            _logger.debug("Configuring ApiService from constructor")
             _config = config
         else:
+            _logger.debug("Configuring ApiService from default configuration")
             _config = configuration
+
+        config_json = json.dumps(_config, indent=4)
+        _logger.debug(config_json)
 
         try:
             auth_type_str = _config["auth_type"]
@@ -25,28 +33,33 @@ class ApiService:
             e = AutbricksConfigurationInvalid(
                 "auth_type", valid_values=AuthenticationType
             )
-            logger.error(e.message)
+            _logger.error(e.message)
             raise e
 
         try:
             self.host = _config["databricks_api_host"]
+            _logger.debug(f"Databricks REST endpoint set as {self.host}")
         except KeyError:
             e = AutbricksConfigurationInvalid("databricks_api_host")
-            logger.error(e.message)
+            _logger.error(e.message)
             raise e
 
         try:
+            _logger.debug(f"Setting AuthorisationType as {auth_type_str}")
             auth_type: AuthenticationType = AuthenticationType[auth_type_str]
         except:
             e = AutbricksConfigurationInvalid(
                 "auth_type", valid_values=AuthenticationType
             )
-            logger.error(e.message)
+            _logger.error(e.message)
             raise e
 
         auth: Auth = auth_factory.get_auth(auth_type, _config)
 
+        _logger.debug("Setting Authorisation Headers")
         self._headers = auth.get_headers()
+        _header_json = json.dumps(self._headers, indent=4)
+        _logger.debug(_header_json)
 
     def api_get(self, api: str, function: str, data: dict = None, query: str = None):
 
@@ -59,7 +72,7 @@ class ApiService:
             json = response.json()
         except Exception:
             ex = AutobricksResponseJsonError(url, "GET", data, response.text)
-            logger.error(ex.message)
+            _logger.error(ex.message)
             raise ex
 
         return json
@@ -73,7 +86,7 @@ class ApiService:
             json = response.json()
         except Exception:
             ex = AutobricksResponseJsonError(url, "POST", data, response.text)
-            logger.error(ex.message)
+            _logger.error(ex.message)
             raise ex
 
         return json

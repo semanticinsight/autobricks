@@ -5,7 +5,7 @@ from enum import Enum
 import time
 from .Dbfs import dbfs_upload
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "clusters"
 
@@ -128,30 +128,30 @@ def cluster_create(
                 to_path = i["dbfs"]["destination"]
                 from_path = os.path.abspath(f"{init_script_path}/{cluster_name}.sh")
                 dbfs_upload(from_path, to_path, overwrite=True)
-                logger.info(
+                _logger.info(
                     f"Uploaded cluster {cluster_name} init script: {from_path} => {to_path}"
                 )
 
-    logger.info(
+    _logger.info(
         f"Attempting to create a cluster using the declaration at path {cluster_defn_path} with the name {cluster_name}"
     )
 
     clusters = cluster_get_by_name(cluster_name)
-    logger.info(f"Found {len(clusters)} clusters with the name {cluster_name}")
+    _logger.info(f"Found {len(clusters)} clusters with the name {cluster_name}")
 
     if len(clusters) > 0 and delete_if_exists:
 
-        logger.info(
+        _logger.info(
             f"Cluster(s) named {cluster_name} already exist. Deleting existing clusters."
         )
         cluster_delete_clusters(clusters)
 
     if len(clusters) == 0 or delete_if_exists or allow_duplicate_names:
 
-        logger.info(f"Creating cluster {cluster_name}")
+        _logger.info(f"Creating cluster {cluster_name}")
         response = _api_service.api_post(endpoint, "create", cluster_defn)
         cluster_id = response["cluster_id"]
-        logger.info(f"Cluster {cluster_name} created with id: {cluster_id}")
+        _logger.info(f"Cluster {cluster_name} created with id: {cluster_id}")
         create_response = {"cluster_id": cluster_id}
 
         if pin:
@@ -162,7 +162,7 @@ def cluster_create(
 
     else:
 
-        logger.info(
+        _logger.info(
             f"Cluster {cluster_name} already exists and delete_if_exists is disabled."
         )
         create_response = {"clusters": clusters, "created": False}
@@ -173,14 +173,14 @@ def cluster_create(
 def cluster_delete_clusters(clusters: list):
 
     cluster_ids = [c["cluster_id"] for c in clusters]
-    logger.info(f"deleting clusters: {str(cluster_ids)}")
+    _logger.info(f"deleting clusters: {str(cluster_ids)}")
 
     for c in cluster_ids:
         try:
             cluster_action(c, ClusterAction.UNPIN)
 
         except Exception as e:
-            logger.info(f"Warning: Failed to unpin cluster_id={c}")
+            _logger.info(f"Warning: Failed to unpin cluster_id={c}")
 
         cluster_action(c, ClusterAction.DELETE)
 
@@ -221,18 +221,18 @@ def cluster_wait_until_state(
     cluster_id: str, cluster_state: ClusterState, wait_seconds: int = 10
 ):
 
-    logger.info(
+    _logger.info(
         f"Waiting for the cluster_id {cluster_id} to the reach the state: {cluster_state.name}"
     )
 
     if cluster_state not in [ClusterState.RUNNING, ClusterState.TERMINATED]:
 
         msg = f"Waiting for a cluster state {cluster_state.name} isn't final and isn't valid"
-        logger.error(msg)
+        _logger.error(msg)
         raise Exception(msg)
 
     previous_state = ClusterState.UNKNOWN
-    logger.info(f"The cluster_id {cluster_id} state: {previous_state.name}")
+    _logger.info(f"The cluster_id {cluster_id} state: {previous_state.name}")
 
     while True:
 
@@ -243,19 +243,19 @@ def cluster_wait_until_state(
         state = ClusterState[cluster["state"]]
         # only log out if it's changed to reduce the log output
         if previous_state != state:
-            logger.info(f"The cluster_id {cluster_id} state: {state.name}")
+            _logger.info(f"The cluster_id {cluster_id} state: {state.name}")
             previous_state = state
 
         if state == ClusterState.ERROR:
 
             msg = f"The cluster_id {cluster_id} is in error state: {cluster['state_message']}"
-            logger.error(msg)
+            _logger.error(msg)
             raise Exception(msg)
 
         elif state == ClusterState.TERMINATED and cluster_state == ClusterState.RUNNING:
 
             msg = f"The cluster_id {cluster_id} {ClusterState.TERMINATED.name}: {cluster['state_message']}"
-            logger.error(msg)
+            _logger.error(msg)
             raise Exception(msg)
 
         elif state == cluster_state:
@@ -282,11 +282,11 @@ def clusters_clear_down(
         clusters["clusters"] = [
             c for c in clusters["clusters"] if cluster_has_tag(c, tag_key, tag_value)
         ]
-        logger.info(
+        _logger.info(
             f"Deleting {len(clusters)} clusters found with tag {tag_key}={tag_value}"
         )
     else:
-        logger.info(f"Deleting {len(clusters)} clusters found")
+        _logger.info(f"Deleting {len(clusters)} clusters found")
 
     if show_only:
         for c in clusters["clusters"]:
@@ -294,7 +294,7 @@ def clusters_clear_down(
             cluster = cluster_get(cluster_id)
             cluster_name = cluster["cluster_name"]
             spark_version = cluster["spark_version"]
-            logger.info(
+            _logger.info(
                 f"name: {cluster_name} id: {cluster_id} spark_version: {spark_version} "
             )
 
@@ -312,22 +312,22 @@ def cluster_log_states():
     clusters = cluster_list()
     if clusters:
         for c in clusters["clusters"]:
-            logger.info(f'{c["cluster_id"]}: {c["state"]}')
+            _logger.info(f'{c["cluster_id"]}: {c["state"]}')
     else:
-        logger.info("No clusters found")
+        _logger.info("No clusters found")
 
 
 def cluster_run(cluster_id: str):
 
     if cluster_is_terminated(cluster_id):
-        logger.info(f"starting cluster {cluster_id}")
+        _logger.info(f"starting cluster {cluster_id}")
         cluster_action(cluster_id, ClusterAction.START)
         cluster_wait_until_state(cluster_id, ClusterState.RUNNING)
 
     elif not cluster_is_running(cluster_id):
-        logger.info("cluster is starting")
-        logger.info(f"cluster {cluster_id} is starting")
+        _logger.info("cluster is starting")
+        _logger.info(f"cluster {cluster_id} is starting")
         cluster_wait_until_state(cluster_id, ClusterState.RUNNING)
 
     else:
-        logger.info(f"cluster {cluster_id} is running")
+        _logger.info(f"cluster {cluster_id} is running")

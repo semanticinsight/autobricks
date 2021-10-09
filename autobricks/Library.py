@@ -3,7 +3,7 @@ from wheel_inspect import inspect_wheel
 from dataclasses import dataclass
 import os
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 _api_service = ApiService()
 

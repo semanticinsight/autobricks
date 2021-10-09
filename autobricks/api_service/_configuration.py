@@ -1,7 +1,7 @@
 import os
 from . import autobricks_logging
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 """
 Loads the configuration from environment variables.

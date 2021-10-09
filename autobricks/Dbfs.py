@@ -3,7 +3,7 @@ from ._decode_utils import base64_decode, format_path_for_os
 import base64
 import os, fnmatch
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "dbfs"
 
@@ -72,7 +72,7 @@ def dbfs_download(from_path: str, to_path: str):
 
     to_os_path = format_path_for_os(to_path)
 
-    logger.info(f"Starting to download file from dbfs: {from_path} => {to_os_path}")
+    _logger.info(f"Starting to download file from dbfs: {from_path} => {to_os_path}")
 
     offset = 0
     # api limited to 1mb chunks
@@ -93,7 +93,7 @@ def dbfs_download(from_path: str, to_path: str):
             if bytes_read < read_chunk:
                 break
 
-    logger.info(f"Finished downloading {str(total_bytes)} bytes")
+    _logger.info(f"Finished downloading {str(total_bytes)} bytes")
 
 
 def _read_file_block(file_object, chunk_size=1024):

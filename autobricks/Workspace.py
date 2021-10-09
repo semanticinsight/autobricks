@@ -11,7 +11,7 @@ import os
 
 from enum import Enum
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "workspace"
 
@@ -175,7 +175,7 @@ def workspace_import_dir(
 
     if deploy_mode == DeployMode.DEFAULT and target_dir:
 
-        logger.error(
+        _logger.error(
             f"target_dir is not required for {deploy_mode.name} deployment mode"
         )
         raise Exception(
@@ -184,7 +184,7 @@ def workspace_import_dir(
 
     elif deploy_mode != DeployMode.DEFAULT and not target_dir:
 
-        logger.error(f"target_dir is required for {deploy_mode.name} deployment mode")
+        _logger.error(f"target_dir is required for {deploy_mode.name} deployment mode")
         raise Exception(
             f"target_dir is required for {deploy_mode.name} deployment mode"
         )
@@ -202,7 +202,7 @@ def workspace_import_dir(
 
     deploy_this = False
 
-    logger.info(
+    _logger.info(
         f"Start deploying from from_root_path={from_root_path} source_dir={source_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
     )
 
@@ -210,7 +210,7 @@ def workspace_import_dir(
 
         deploy_dir = root.replace(from_root_path, "")
 
-        logger.debug(
+        _logger.debug(
             f"Checking if deploy_dir={deploy_dir} starts with source_dir={source_dir}"
         )
 
@@ -222,13 +222,13 @@ def workspace_import_dir(
 
         else:
             deploy_this = False
-            logger.info(
+            _logger.info(
                 f"Skipping dir source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
             )
 
         if deploy_this:
 
-            logger.info(
+            _logger.info(
                 f"Deploying dir source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
             )
 
@@ -242,7 +242,7 @@ def workspace_import_dir(
                 from_file_path = os.path.join(root, filename)
                 to_file_path = from_file_path.replace(from_root_path, "")
 
-                logger.info(
+                _logger.info(
                     f"Deploying from_file_path={from_file_path} source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
                 )
 
@@ -305,8 +305,8 @@ def _modify_deploy_path(
     deploy_dir: str, root: str, modifier: str, deploy_mode: DeployMode
 ):
 
-    logger.info(f"Preparing deploy path deploy_dir={deploy_dir}")
-    logger.debug(
+    _logger.info(f"Preparing deploy path deploy_dir={deploy_dir}")
+    _logger.debug(
         f"Preparing deploy path deploy_dir={deploy_dir} root={root} modifier={modifier} deploy_mode={deploy_mode.name}"
     )
 
@@ -340,6 +340,6 @@ def _modify_deploy_path(
     # databricks runs on linux
     new_path = format_path_for(new_path, OS.LINUX)
 
-    logger.info(f"Prepared deploy path deploy_dir={new_path}")
+    _logger.info(f"Prepared deploy path deploy_dir={new_path}")
 
     return new_path

@@ -7,7 +7,7 @@ import shutil
 import yaml
 from .api_service import autobricks_logging
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 
 @dataclass

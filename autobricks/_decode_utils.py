@@ -3,7 +3,7 @@ import sys
 from enum import Enum
 from .api_service import autobricks_logging
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 
 class OS(Enum):

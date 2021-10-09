@@ -4,7 +4,7 @@ import adal
 from ._base_api import base_api_get as _api_get
 from . import autobricks_logging
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 
 _AUTH_DNS = "login.microsoftonline.com"
@@ -16,7 +16,7 @@ class Auth(ABC):
         pass
 
     @abstractmethod
-    def get_headers(self):
+    def get_headers(self) -> dict:
         pass
 
 

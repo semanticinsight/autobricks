@@ -9,7 +9,7 @@ from ._auth import (
 from . import autobricks_logging
 from ._exceptions import AutbricksAuthTypeNotRegistered
 
-logger = autobricks_logging.get_logger(__name__)
+_logger = autobricks_logging.get_logger(__name__)
 
 
 class AuthenticationType(Enum):
@@ -34,7 +34,7 @@ class AuthFactory:
 
         if not creator:
             e = AutbricksAuthTypeNotRegistered(auth_type)
-            logger.error(e.message)
+            _logger.error(e.message)
             raise e
 
         return creator(parameters)
