@@ -38,7 +38,7 @@ setup(
     ],
     packages=[
         "autobricks",
-        "autobricks.api_services"],
+        "autobricks.api_service"],
     install_requires=[
           'requests',
           'PyYAML',
