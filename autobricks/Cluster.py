@@ -4,7 +4,6 @@ import yaml
 from enum import Enum
 import time
 from .Dbfs import dbfs_upload
-from .api_service import autobricks_logging
 
 logger = autobricks_logging.get_logger(__name__)
 
