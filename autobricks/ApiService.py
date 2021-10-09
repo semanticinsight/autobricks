@@ -2,7 +2,7 @@ from .AuthFactory import auth_factory, AuthenticationType
 from .Auth import Auth
 from .BaseApi import base_api_get as _base_api_get, base_api_post as _base_api_post
 from . import AutobricksLogging
-from .Exceptions import AutbricksConfigurationInvalid
+from .Exceptions import AutbricksConfigurationInvalid, AutobricksResponseJsonError
 
 logger = AutobricksLogging.get_logger(__name__)
 
@@ -49,11 +49,25 @@ class ApiService:
             url = f"{url}?{query}"
         response = _base_api_get(url=url, headers=self._headers, json=data)
 
-        return response.json()
+        try:
+            json = response.json()
+        except Exception:
+            ex = AutobricksResponseJsonError(url, "GET", data, response.text)
+            logger.error(ex.message)
+            raise ex
+
+        return json
 
     def api_post(self, api: str, function: str, data: dict):
 
         url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
         response = _base_api_post(url=url, headers=self._headers, json=data)
 
-        return response.json()
+        try:
+            json = response.json()
+        except Exception:
+            ex = AutobricksResponseJsonError(url, "POST", data, response.text)
+            logger.error(ex.message)
+            raise ex
+
+        return json

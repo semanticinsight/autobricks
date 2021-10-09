@@ -1,6 +1,17 @@
 import enum
-from .AuthFactory import AuthenticationType
+import json
 
+class AutobricksResponseJsonError(Exception):
+    def __init__(
+        self,
+        verb:str,
+        url:str,
+        data:dict,
+        response_text: str
+    ):
+        _data = json.dumps(data, indent=4)
+        self.message = f"HTTP {verb} response.json() from {url} failed. request_body= {_data}. response.text={response_text}"
+        super().__init__(self.message)
 
 class AutbricksConfigurationInvalid(Exception):
     def __init__(
@@ -17,6 +28,6 @@ class AutbricksConfigurationInvalid(Exception):
 
 
 class AutbricksAuthTypeNotRegistered(Exception):
-    def __init__(self, auth_type: AuthenticationType):
-        self.message = f"Autobricks authentication type {auth_type} has not been registered in the AuthFactory module"
+    def __init__(self, auth_type: enum.Enum):
+        self.message = f"Autobricks authentication type {auth_type.name} has not been registered in the AuthFactory module"
         super().__init__(self.message)
