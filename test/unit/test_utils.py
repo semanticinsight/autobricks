@@ -1,17 +1,17 @@
 import sys
 from pytest_mock import mocker
-from autobricks import DecodeUtils
+from autobricks import _decode_utils
 
 def test_base64_decode_utf8():
 
-    result = DecodeUtils.base64_decode("SGVsbG8gV29ybGQ=").decode("utf-8")
+    result = _decode_utils.base64_decode("SGVsbG8gV29ybGQ=").decode("utf-8")
 
     assert result == "Hello World"
 
 
 def test_base64_encode_utf8():
 
-    result = DecodeUtils.base64_encode("Hello World".encode("utf-8"))
+    result = _decode_utils.base64_encode("Hello World".encode("utf-8"))
 
     assert result == "SGVsbG8gV29ybGQ="
 
@@ -19,7 +19,7 @@ def test_base64_encode_utf8():
 def test_base64_decode_ascii():
 
     encoding = "ascii"
-    result = DecodeUtils.base64_decode("SGVsbG8gV29ybGQ=", encoding).decode(encoding)
+    result = _decode_utils.base64_decode("SGVsbG8gV29ybGQ=", encoding).decode(encoding)
 
     assert result == "Hello World"
 
@@ -27,7 +27,7 @@ def test_base64_decode_ascii():
 def test_base64_encode_ascii():
 
     encoding = "ascii"
-    result = DecodeUtils.base64_encode("Hello World".encode(encoding), encoding)
+    result = _decode_utils.base64_encode("Hello World".encode(encoding), encoding)
 
     assert result == "SGVsbG8gV29ybGQ="
 
@@ -36,20 +36,20 @@ def test_post_data():
 
     mocker.patch.object(sys, "platform", "linux")
 
-    assert not DecodeUtils.is_windows()
+    assert not _decode_utils.is_windows()
 
 
 def test_post_data(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
 
-    assert DecodeUtils.is_windows()
+    assert _decode_utils.is_windows()
 
 
 def test_format_linux_path_for_win32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for_os("/not/a/windows/path")
+    result = _decode_utils.format_path_for_os("/not/a/windows/path")
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -58,7 +58,7 @@ def test_format_linux_path_for_win32(mocker):
 def test_format_part_linux_path_for_win32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for_os("/not/a\\windows/path")
+    result = _decode_utils.format_path_for_os("/not/a\\windows/path")
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -67,7 +67,7 @@ def test_format_part_linux_path_for_win32(mocker):
 def test_format_win32_path_for_win32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for_os("\\not\\a\\windows\\path")
+    result = _decode_utils.format_path_for_os("\\not\\a\\windows\\path")
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -76,7 +76,7 @@ def test_format_win32_path_for_win32(mocker):
 def test_format_win32_path_for_linux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for_os("\\not\\a\\linux\\path")
+    result = _decode_utils.format_path_for_os("\\not\\a\\linux\\path")
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -85,7 +85,7 @@ def test_format_win32_path_for_linux(mocker):
 def test_format_part_win32_path_for_linux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for_os("\\not\\a/linux\\path")
+    result = _decode_utils.format_path_for_os("\\not\\a/linux\\path")
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -94,7 +94,7 @@ def test_format_part_win32_path_for_linux(mocker):
 def test_format_linux_path_for_linux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for_os("/not/a/linux/path")
+    result = _decode_utils.format_path_for_os("/not/a/linux/path")
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -103,7 +103,7 @@ def test_format_linux_path_for_linux(mocker):
 def test_format_win32_path_for_darwin(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for_os("\\not\\a\\darwin\\path")
+    result = _decode_utils.format_path_for_os("\\not\\a\\darwin\\path")
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -112,7 +112,7 @@ def test_format_win32_path_for_darwin(mocker):
 def test_format_part_win32_path_for_darwin(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for_os("\\not\\a/darwin\\path")
+    result = _decode_utils.format_path_for_os("\\not\\a/darwin\\path")
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -121,7 +121,7 @@ def test_format_part_win32_path_for_darwin(mocker):
 def test_format_darwin_path_for_darwin(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for_os("/not/a/darwin/path")
+    result = _decode_utils.format_path_for_os("/not/a/darwin/path")
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -130,7 +130,7 @@ def test_format_darwin_path_for_darwin(mocker):
 def test_format_linux_path_for_oswin32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for("/not/a/windows/path", DecodeUtils.OS.WINDOWS)
+    result = _decode_utils.format_path_for("/not/a/windows/path", _decode_utils.OS.WINDOWS)
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -139,7 +139,7 @@ def test_format_linux_path_for_oswin32(mocker):
 def test_format_part_linux_path_for_oswin32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for("/not/a\\windows/path", DecodeUtils.OS.WINDOWS)
+    result = _decode_utils.format_path_for("/not/a\\windows/path", _decode_utils.OS.WINDOWS)
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -148,7 +148,7 @@ def test_format_part_linux_path_for_oswin32(mocker):
 def test_format_win32_path_for_oswin32(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    result = DecodeUtils.format_path_for("\\not\\a\\windows\\path", DecodeUtils.OS.WINDOWS)
+    result = _decode_utils.format_path_for("\\not\\a\\windows\\path", _decode_utils.OS.WINDOWS)
     expected = "\\not\\a\\windows\\path"
 
     assert result == expected
@@ -157,7 +157,7 @@ def test_format_win32_path_for_oswin32(mocker):
 def test_format_win32_path_for_oslinux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for("\\not\\a\\linux\\path", DecodeUtils.OS.LINUX)
+    result = _decode_utils.format_path_for("\\not\\a\\linux\\path", _decode_utils.OS.LINUX)
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -166,7 +166,7 @@ def test_format_win32_path_for_oslinux(mocker):
 def test_format_part_win32_path_for_oslinux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for("\\not\\a/linux\\path", DecodeUtils.OS.LINUX)
+    result = _decode_utils.format_path_for("\\not\\a/linux\\path", _decode_utils.OS.LINUX)
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -175,7 +175,7 @@ def test_format_part_win32_path_for_oslinux(mocker):
 def test_format_linux_path_for_oslinux(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    result = DecodeUtils.format_path_for("/not/a/linux/path", DecodeUtils.OS.LINUX)
+    result = _decode_utils.format_path_for("/not/a/linux/path", _decode_utils.OS.LINUX)
     expected = "/not/a/linux/path"
 
     assert result == expected
@@ -184,7 +184,7 @@ def test_format_linux_path_for_oslinux(mocker):
 def test_format_win32_path_for_osmac(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for("\\not\\a\\darwin\\path", DecodeUtils.OS.MAC)
+    result = _decode_utils.format_path_for("\\not\\a\\darwin\\path", _decode_utils.OS.MAC)
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -193,7 +193,7 @@ def test_format_win32_path_for_osmac(mocker):
 def test_format_part_win32_path_for_osmac(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for("\\not\\a/darwin\\path", DecodeUtils.OS.MAC)
+    result = _decode_utils.format_path_for("\\not\\a/darwin\\path", _decode_utils.OS.MAC)
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -202,7 +202,7 @@ def test_format_part_win32_path_for_osmac(mocker):
 def test_format_linux_path_for_osmac(mocker):
 
     mocker.patch.object(sys, "platform", "darwin")
-    result = DecodeUtils.format_path_for("/not/a/darwin/path", DecodeUtils.OS.MAC)
+    result = _decode_utils.format_path_for("/not/a/darwin/path", _decode_utils.OS.MAC)
     expected = "/not/a/darwin/path"
 
     assert result == expected
@@ -220,7 +220,7 @@ def test_format_exception(mocker):
 
     error_message = None
     try:
-        result = DecodeUtils.format_path_for_os(path)
+        result = _decode_utils.format_path_for_os(path)
 
     except Exception as e:
         error_message = str(e)
@@ -231,10 +231,10 @@ def test_format_exception(mocker):
 def test_is_windows(mocker):
 
     mocker.patch.object(sys, "platform", "win32")
-    assert DecodeUtils.is_windows()
+    assert _decode_utils.is_windows()
 
 
 def test_is_not_windows(mocker):
 
     mocker.patch.object(sys, "platform", "linux")
-    assert not DecodeUtils.is_windows()
+    assert not _decode_utils.is_windows()

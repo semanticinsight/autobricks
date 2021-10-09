@@ -1,6 +1,6 @@
 from .api_service import ApiService, autobricks_logging
 
-from .DecodeUtils import (
+from ._decode_utils import (
     base64_encode,
     base64_decode,
     format_path_for_os,

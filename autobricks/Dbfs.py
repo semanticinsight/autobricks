@@ -1,5 +1,5 @@
 from .api_service import ApiService, autobricks_logging
-from .DecodeUtils import base64_decode, format_path_for_os
+from ._decode_utils import base64_decode, format_path_for_os
 import base64
 import os, fnmatch
 
