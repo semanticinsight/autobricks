@@ -1,13 +1,9 @@
-import logging
 from .AuthFactory import auth_factory, AuthenticationType
 from .Auth import Auth
 from .BaseApi import base_api_get as _base_api_get, base_api_post as _base_api_post
+from autobricks import AutobricksLogging
 
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(f"autobricks.ApiUtils")
+logger = AutobricksLogging.get_logger(__name__)
 
 
 API_VERSION = "2.0"

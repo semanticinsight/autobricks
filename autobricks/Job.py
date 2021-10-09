@@ -6,13 +6,11 @@ from ApiService import ApiService
 from . import Configuration
 from uuid import UUID
 import time
-import logging
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 endpoint = "jobs"
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
 _api_service = ApiService(Configuration.config)
 

@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-import logging
+
 import adal
 from .BaseApi import base_api_get as _api_get
+from autobricks import AutobricksLogging
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(f"autobricks.ApiUtils")
+logger = AutobricksLogging.get_logger(__name__)
+
 
 _AUTH_DNS = "login.microsoftonline.com"
 

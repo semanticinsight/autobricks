@@ -1,17 +1,13 @@
 import requests
 from requests.exceptions import HTTPError
 import logging
-from typing import Union
+from autobricks import AutobricksLogging
 
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(f"autobricks.ApiUtils")
+logger = AutobricksLogging.get_logger(__name__)
 
 
 def base_api_get(
-    url: str, headers: dict,  json: dict = None, data: dict = None, query: str = None
+    url: str, headers: dict, json: dict = None, data: dict = None, query: str = None
 ):
 
     if query:

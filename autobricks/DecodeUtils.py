@@ -1,13 +1,11 @@
 import base64
 import sys
 from enum import Enum
-import logging
 
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 
 class OS(Enum):

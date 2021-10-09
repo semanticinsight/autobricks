@@ -1,4 +1,7 @@
 import os
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 """
 Loads the configuration from environment variables.
@@ -11,19 +14,16 @@ _default_schema = {
         "auth_type": {
             "type": "string",
             "enum": [
-                    "USER", 
-                    "SERVICE_PRINCIPAL",
-                    "SERVICE_PRINCIPAL_MGMT_ENDPOINT",
-                    "SERVICE_PRINCIPAL_ADAL",
-                    "SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL"
-                ]
-            },
+                "USER",
+                "SERVICE_PRINCIPAL",
+                "SERVICE_PRINCIPAL_MGMT_ENDPOINT",
+                "SERVICE_PRINCIPAL_ADAL",
+                "SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL",
+            ],
+        },
         "databricks_api_host": {"type": "string"},
     },
-    "required": [
-        "auth_type", 
-        "databricks_api_host"
-    ]
+    "required": ["auth_type", "databricks_api_host"],
 }
 
 _user_schema = {
@@ -33,11 +33,7 @@ _user_schema = {
         "dbutilstoken": {"type": "string"},
         "databricks_api_host": {"type": "string"},
     },
-    "required": [
-        "auth_type", 
-        "dbutilstoken", 
-        "databricks_api_host"
-    ]
+    "required": ["auth_type", "dbutilstoken", "databricks_api_host"],
 }
 
 _sp_schema = {
@@ -50,12 +46,12 @@ _sp_schema = {
         "databricks_api_host": {"type": "string"},
     },
     "required": [
-        "auth_type", 
-        "sp_client_id", 
+        "auth_type",
+        "sp_client_id",
         "sp_client_secret",
         "ad_resource",
-        "databricks_api_host"
-    ]
+        "databricks_api_host",
+    ],
 }
 
 _spme_schema = {
@@ -73,8 +69,8 @@ _spme_schema = {
         "databricks_api_host": {"type": "string"},
     },
     "required": [
-        "auth_type", 
-        "sp_client_id", 
+        "auth_type",
+        "sp_client_id",
         "sp_client_secret",
         "ad_resource",
         "tenant_id",
@@ -82,8 +78,8 @@ _spme_schema = {
         "workspace_name",
         "resource_group",
         "subscription_id",
-        "databricks_api_host"
-    ]
+        "databricks_api_host",
+    ],
 }
 
 config = {

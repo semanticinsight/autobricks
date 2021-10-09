@@ -1,8 +1,6 @@
 import json
 
-
 from autobricks import Cluster
-
 
 clusters = Cluster.cluster_list()
 

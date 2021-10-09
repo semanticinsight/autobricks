@@ -3,13 +3,12 @@ from .DecodeUtils import base64_decode, format_path_for_os
 from . import Configuration
 import base64
 import os, fnmatch
-import logging
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 endpoint = "dbfs"
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+
 
 _api_service = ApiService(Configuration.config)
 

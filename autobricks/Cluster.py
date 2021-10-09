@@ -6,12 +6,11 @@ from enum import Enum
 import time
 import logging
 from .Dbfs import dbfs_upload
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 endpoint = "clusters"
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
 _api_service = ApiService(Configuration.config)
 

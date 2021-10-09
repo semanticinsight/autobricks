@@ -6,6 +6,9 @@ from .Auth import (
     SPAdalAuth,
     SPMgmtEndpointAdalAuth,
 )
+from autobricks import AutobricksLogging
+
+logger = AutobricksLogging.get_logger(__name__)
 
 
 class AuthenticationType(Enum):
