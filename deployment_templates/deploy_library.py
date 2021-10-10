@@ -15,12 +15,5 @@ build_dir = sys.argv[3]
 deploy_dir = sys.argv[4] 
 
 
+Dbfs.dbfs_upload_files('*.whl', build_dir, deploy_dir, True)
 
-wheels = Dbfs.find_file('*.whl', build_dir)
-
-for whl in wheels:
-
-    whl_filename = os.path.basename(whl)
-
-    print(f"{whl} => {deploy_dir}/{whl_filename}")
-    Dbfs.dbfs_upload(whl, f"{deploy_dir}/{whl_filename}", True)

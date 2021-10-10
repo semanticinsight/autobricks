@@ -32,6 +32,28 @@ def dbfs_upload(from_path: str, to_path: str, overwrite: bool = True):
     return _api_service.api_post(endpoint, "close", data)
 
 
+def dbfs_upload_files(
+    file_match: str, from_path: str, to_path: str, overwrite: bool = True
+):
+
+    _logger.info(
+        f"Uploading files from {from_path} with filename matching {file_match} to dbfs {to_path}"
+    )
+    files = find_file(file_match, from_path)
+
+    if not files:
+        files = []
+
+    _logger.info(f"{len(files)} files will be upload with overwrite={overwrite}")
+
+    for f in files:
+
+        filename = os.path.basename(f)
+
+        _logger.info(f"{f} => {to_path}/{filename}")
+        dbfs_upload(f, f"{to_path}/{filename}", overwrite)
+
+
 def dbfs_delete_file(path: str, recursive: bool = True):
 
     data = {"path": path, "recursive": recursive}
