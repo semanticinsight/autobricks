@@ -100,8 +100,8 @@ export DATABRICKS_API_HOST=<my_databricks_host_url>
 
 ```
 
-Exporting variables doesn't make for a great development experience so I recommend using the environment manager 
-tools of your editor and for testing create a ./pytest.ini that looks like this:
+Exporting variables doesn't make for a great development experience so the project uses pytest.ini for
+mock environment variables. For example:
 
 ```
 [pytest]
@@ -111,11 +111,9 @@ env =
     ...
 ```
 
-**REMINDER: do NOT commit any files that contain security tokens**
+**REMINDER: do NOT commit pytest.ini that contains real security tokens**
 
-Git ignore already contains an exclusion for pytest.ini
-
-Also for convenience here is a yaml template for docker and build pipelines:
+For convenience here is a yaml template for docker and build pipelines:
 
 ```
 env:

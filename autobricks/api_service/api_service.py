@@ -1,17 +1,8 @@
-from ._auth_factory import (
-    auth_factory, 
-    AuthenticationType
-)
+from ._auth_factory import auth_factory, AuthenticationType
 from ._auth import Auth
-from ._base_api import (
-    base_api_get as _base_api_get, 
-    base_api_post as _base_api_post
-)
+from ._base_api import base_api_get as _base_api_get, base_api_post as _base_api_post
 from . import autobricks_logging
-from ._exceptions import (
-    AutobricksConfigurationInvalid, 
-    AutobricksResponseJsonError
-)
+from ._exceptions import AutobricksConfigurationInvalid, AutobricksResponseJsonError
 from ._configuration import configuration
 import json
 
@@ -55,7 +46,7 @@ class ApiService:
 
         try:
             _logger.debug(f"Setting AuthorisationType as {auth_type_str}")
-            auth_type: AuthenticationType = AuthenticationType[auth_type_str]
+            self.auth_type: AuthenticationType = AuthenticationType[auth_type_str]
         except:
             e = AutobricksConfigurationInvalid(
                 "auth_type", value=auth_type_str, valid_values=AuthenticationType
@@ -63,7 +54,7 @@ class ApiService:
             _logger.error(e.message)
             raise e
 
-        auth: Auth = auth_factory.get_auth(auth_type, _config)
+        auth: Auth = auth_factory.get_auth(self.auth_type, _config)
 
         _logger.debug("Setting Authorisation Headers")
         self._headers = auth.get_headers()

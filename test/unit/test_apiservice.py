@@ -7,6 +7,7 @@ from autobricks.api_service import (
 from autobricks.api_service._auth_factory import AuthenticationType
 from dataclasses import dataclass
 import pytest
+import os 
 
 
 @pytest.fixture
@@ -218,3 +219,14 @@ def test_api_service_api_host_exception(config):
     with pytest.raises(AutobricksConfigurationInvalid, match=msg):
         api_svc = ApiService(config=tconfig)
 
+def test_api_service_default_configuration():
+    """To simplify environment configuration
+        Given no configuration initialisation
+        Then configuration will be taken from the environment settings (pytest.ini)
+    """
+    api_svc = ApiService()
+    api_host = api_svc.host
+    api_host = api_svc.auth_type
+
+    assert api_svc.host == os.getenv("DATABRICKS_API_HOST")
+    assert api_svc.auth_type.name == os.getenv("AUTH_TYPE")
