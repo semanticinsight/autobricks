@@ -12,6 +12,14 @@ Uploads a file from a local path to dbfs destination path. `Overrite=True` will 
 dbfs_upload(from_path: str, to_path: str, overwrite: bool = True)
 ```
 
+## dbfs_upload
+
+Uploads all files matching a regex from a local path to dbfs destination path. `Overrite=True` will overwrite the file.
+
+```python
+dbfs_upload(file_match:str, from_path: str, to_path: str, overwrite: bool = True)
+```
+
 ## [dbfs_delete_file](https://docs.databricks.com/dev-tools/api/latest/dbfs.html#delete)
 
 Deletes a file or folder at the Dbfs path provided. `recursive=True` is required for a directory.
