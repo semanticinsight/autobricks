@@ -2,7 +2,7 @@ from ._auth_factory import auth_factory, AuthenticationType
 from ._auth import Auth
 from ._base_api import base_api_get as _base_api_get, base_api_post as _base_api_post
 from . import autobricks_logging
-from ._exceptions import AutbricksConfigurationInvalid, AutobricksResponseJsonError
+from ._exceptions import AutobricksConfigurationInvalid, AutobricksResponseJsonError
 from ._configuration import configuration
 import json
 
@@ -30,7 +30,7 @@ class ApiService:
         try:
             auth_type_str = _config["auth_type"]
         except KeyError:
-            e = AutbricksConfigurationInvalid(
+            e = AutobricksConfigurationInvalid(
                 "auth_type", valid_values=AuthenticationType
             )
             _logger.error(e.message)
@@ -40,7 +40,7 @@ class ApiService:
             self.host = _config["databricks_api_host"]
             _logger.debug(f"Databricks REST endpoint set as {self.host}")
         except KeyError:
-            e = AutbricksConfigurationInvalid("databricks_api_host")
+            e = AutobricksConfigurationInvalid("databricks_api_host")
             _logger.error(e.message)
             raise e
 
@@ -48,7 +48,7 @@ class ApiService:
             _logger.debug(f"Setting AuthorisationType as {auth_type_str}")
             auth_type: AuthenticationType = AuthenticationType[auth_type_str]
         except:
-            e = AutbricksConfigurationInvalid(
+            e = AutobricksConfigurationInvalid(
                 "auth_type", valid_values=AuthenticationType
             )
             _logger.error(e.message)

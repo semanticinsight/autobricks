@@ -1,5 +1,10 @@
 
-from autobricks.api_service import ApiService, configuration
+from autobricks.api_service import (
+    ApiService, 
+    configuration, 
+    AutobricksConfigurationInvalid
+)
+from autobricks.api_service._auth_factory import AuthenticationType
 from dataclasses import dataclass
 import pytest
 
@@ -170,4 +175,29 @@ def test_post_data_exception(requests_mock, config, api_service):
 
     assert result
 
+def test_api_service_auth_type_exception(config):
+    """So that ApiService configuration is usable
+        Given a configuration that contains no auth type
+        Then a meaningfull exception should be thrown
+    """
+    var = "auth_type"
+    tconfig = dict(config.config)
+    del tconfig[var]
 
+    values = ", ".join([v.name for v in AuthenticationType])
+    msg = f"Autobricks configuration variable '{var}' is not valid. {var}=None. Valid values are: {values}"
+    with pytest.raises(AutobricksConfigurationInvalid, match=msg):
+        api_svc = ApiService(config=tconfig)
+
+def test_api_service_api_host_exception(config):
+    """So that ApiService configuration is usable
+        Given a configuration that contains no databricks_api_host
+        Then a meaningfull exception should be thrown
+    """
+    var = "databricks_api_host"
+    tconfig = dict(config.config)
+    del tconfig[var]
+
+    msg = f"Autobricks configuration variable '{var}' is not valid. {var}=None"
+    with pytest.raises(AutobricksConfigurationInvalid, match=msg):
+        api_svc = ApiService(config=tconfig)
