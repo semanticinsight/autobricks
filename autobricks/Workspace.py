@@ -32,6 +32,7 @@ class Extension(Enum):
     html = 2
     ipynb = 3
     dbc = 4
+    sql = 5
 
 
 class Format(Enum):
@@ -52,12 +53,23 @@ def get_format(extension: Extension):
 
     if extension == Extension.py:
         return Format.SOURCE
+    elif extension == Extension.sql:
+        return Format.SOURCE
     elif extension == Extension.html:
         return Format.HTML
     elif extension == Extension.ipynb:
         return Format.JUPYTER
     elif extension == Extension.dbc:
         return Format.DBC
+
+def get_language(extension: Extension):
+
+    if extension == Extension.py:
+        return Language.PYTHON
+    elif extension == Extension.sql:
+        return Language.SQL
+    else:
+        raise Exception("unknown language for extension")
 
 
 def workspace_import(
@@ -269,7 +281,7 @@ def _deploy_file(
     to_file_path, extension = os.path.splitext(to_file_path)
     extension_type = Extension[extension.replace(".", "")]
     format = get_format(extension_type)
-    language = Language.PYTHON
+    language = get_language(extension_type)
     overwrite = format != format.DBC
 
     action = {
