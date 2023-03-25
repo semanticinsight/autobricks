@@ -10,16 +10,7 @@ README = (HERE / "PYPI.md").read_text()
 # This call to setup() does all the work
 setup(
     name="autobricks",
-    version_config={
-        "template": "{tag}",
-        "dev_template": "{tag}.dev{ccount}",
-        "dirty_template": "{tag}.dev{ccount}.dirty",
-        "starting_version": "0.0.1",
-        "version_callback": None,
-        "version_file": None,
-        "count_commits_from_version_file": False
-    },
-    setup_requires=['setuptools-git-versioning'],
+    version=0.1.4,
     description="Databricks Deployment Utils",
     long_description=README,
     long_description_content_type="text/markdown",
