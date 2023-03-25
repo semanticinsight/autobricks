@@ -7,9 +7,6 @@ variables:
 - group: data-platform-kv
 - group: databricks
 
-trigger:
-- main
-
 pool:
   vmImage: 'ubuntu-latest'
 strategy:
