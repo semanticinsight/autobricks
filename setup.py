@@ -10,7 +10,7 @@ README = (HERE / "PYPI.md").read_text()
 # This call to setup() does all the work
 setup(
     name="autobricks",
-    version="0.1.4.dev5",
+    version="0.1.4.dev6",
     description="Databricks Deployment Utils",
     long_description=README,
     long_description_content_type="text/markdown",

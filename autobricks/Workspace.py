@@ -293,7 +293,7 @@ def _deploy_file(
     # extension_type = Extension[extension.replace(".", "")]
     # format = get_format(extension_type)
     # language = get_language(extension_type)
-    to_file_path, _ = os.path.splitext(to_file_path)
+    # to_file_path, _ = os.path.splitext(to_file_path)
     # format = Format.AUTO
 
     action = {
