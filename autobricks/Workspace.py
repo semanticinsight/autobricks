@@ -330,9 +330,8 @@ def _modify_deploy_path(
     deploy_dir: str, root: str, modifier: str, deploy_mode: DeployMode
 ):
 
-    _logger.info(f"Preparing deploy path deploy_dir={deploy_dir}")
     _logger.debug(
-        f"Preparing deploy path deploy_dir={deploy_dir} root={root} modifier={modifier} deploy_mode={deploy_mode.name}"
+        f"Modifying path based on deploy_mode={deploy_mode.name} path deploy_dir={deploy_dir} root={root} modifier={modifier}"
     )
 
     if deploy_mode == DeployMode.DEFAULT:
@@ -365,6 +364,6 @@ def _modify_deploy_path(
     # databricks runs on linux
     new_path = format_path_for(new_path, OS.LINUX)
 
-    _logger.info(f"Prepared deploy path deploy_dir={new_path}")
+    _logger.debug(f"Modified deploy path deploy_dir={new_path}")
 
     return new_path
