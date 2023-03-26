@@ -303,7 +303,7 @@ def _deploy_file(
     }
 
     workspace_import(
-        form_path = from_file_path, 
+        from_path = from_file_path, 
         to_path = to_file_path
     )
 

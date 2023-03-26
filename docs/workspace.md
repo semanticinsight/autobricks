@@ -73,7 +73,7 @@ workspace_import(
 )-> dict
 ```
 
-- `form_path` - the local file path
+- `from_path` - the local file path
 - `to_path` - databricks workspace destination path
 - `format` - Is the format of the notebook
 
