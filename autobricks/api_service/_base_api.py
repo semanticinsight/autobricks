@@ -5,7 +5,7 @@ import os
 
 _logger = autobricks_logging.get_logger(__name__)
 
-_ssl_verify = bool(os.getenv("SSL_VERIFY", "True"))
+_ssl_verify = False if os.getenv("SSL_VERIFY", "false").lower() == "false" else True
 if not _ssl_verify:
     _logger.info(f"WARNING SSL Verification is off!")
 
