@@ -11,13 +11,12 @@ from ._exceptions import AutobricksAuthTypeNotRegistered
 
 _logger = autobricks_logging.get_logger(__name__)
 
-
 class AuthenticationType(Enum):
 
-    USER = (1,)
-    SERVICE_PRINCIPAL = (2,)
-    SERVICE_PRINCIPAL_MGMT_ENDPOINT = (3,)
-    SERVICE_PRINCIPAL_ADAL = (4,)
+    USER = 1
+    SERVICE_PRINCIPAL = 2
+    SERVICE_PRINCIPAL_MGMT_ENDPOINT = 3
+    SERVICE_PRINCIPAL_ADAL = 4
     SERVICE_PRINCIPAL_MGMT_ENDPOINT_ADAL = 5
 
 
