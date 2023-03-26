@@ -20,33 +20,34 @@ _api_service = ApiService()
 
 
 class DeployMode(Enum):
-    DEFAULT = 1
-    MOVE = 2
-    PARENT = 3
-    CHILD = 4
-    ROOT_CHILD = 5
+    DEFAULT = "DEFAULT"
+    MOVE = "MOVE"
+    PARENT = "PARENT"
+    CHILD = "CHILD"
+    ROOT_CHILD = "ROOT_CHILD"
 
 
 class Extension(Enum):
-    py = 1
-    html = 2
-    ipynb = 3
-    dbc = 4
-    sql = 5
+    py = "py"
+    html = "html"
+    ipynb = "ipynb"
+    dbc = "dbc"
+    sql = "sql"
 
 
 class Format(Enum):
-    SOURCE = 1
-    HTML = 2
-    JUPYTER = 3
-    DBC = 4
+    SOURCE = "SOURCE"
+    HTML = "HTML"
+    JUPYTER = "JUPYTER"
+    DBC = "DBC"
+    AUTO = "AUTO"
 
 
 class Language(Enum):
-    SCALA = 1
-    PYTHON = 2
-    SQL = 3
-    R = 4
+    SCALA = "SCALA"
+    PYTHON = "PYTHON"
+    SQL = "SQL"
+    R = "R"
 
 
 def get_format(extension: Extension):
@@ -73,43 +74,52 @@ def get_language(extension: Extension):
 
 
 def workspace_import(
-    form_path: str, to_path: str, format: Format, language: Language, overwrite: True
+    from_path: str, to_path: str, format: Format=Format.AUTO, language: Language=None, overwrite=True
 ):
 
-    with open(form_path, "rb") as file:
+    with open(from_path, "rb") as file:
         content = base64_encode(file.read())
 
     data = {
         "path": to_path,
         "format": format.name,
-        "language": language.name,
         "content": content,
         "overwrite": overwrite,
     }
+
+    if language:
+        data["language"] = language.name
+
+    _logger.info(f"workspace import {from_path} to {to_path}")
+
     return _api_service.api_post(endpoint, "import", data)
 
 
 def workspace_delete(path: str, recursive: True):
 
     data = {"path": path, "recursive": recursive}
+    _logger.info(f"workspace deleting path {path} recursive {str(recursive)}")
     return _api_service.api_post(endpoint, "delete", data)
 
 
 def workspace_get_status(path: str):
 
     data = {"path": path}
+    _logger.info(f"workspace getting status path {path}")
     return _api_service.api_get(endpoint, "get-status", data)
 
 
 def workspace_list(path: str):
 
     data = {"path": path}
+    _logger.info(f"workspace listing path {path}")
     return _api_service.api_get(endpoint, "list", data)
 
 
 def workspace_mkdirs(path: str):
 
     data = {"path": path}
+    _logger.info(f"workspace making dirs {path}")
     return _api_service.api_post(endpoint, "mkdirs", data)
 
 
@@ -117,6 +127,7 @@ def workspace_export(from_path: str, format: Format, to_path: str):
 
     data = {"path": from_path, "format": format.name.upper(), "direct_download": False}
 
+    _logger.info(f"workspace exporting from path {from_path} format {format.name.upper()}")
     response = _api_service.api_get(endpoint, "export", data)
 
     file_type = response["file_type"]
@@ -234,13 +245,13 @@ def workspace_import_dir(
 
         else:
             deploy_this = False
-            _logger.info(
+            _logger.debug(
                 f"Skipping dir source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
             )
 
         if deploy_this:
 
-            _logger.info(
+            _logger.debug(
                 f"Deploying dir source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
             )
 
@@ -254,7 +265,7 @@ def workspace_import_dir(
                 from_file_path = os.path.join(root, filename)
                 to_file_path = from_file_path.replace(from_root_path, "")
 
-                _logger.info(
+                _logger.debug(
                     f"Deploying from_file_path={from_file_path} source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
                 )
 
@@ -278,21 +289,23 @@ def _deploy_file(
         to_file_path, source_dir, target_dir, deploy_mode
     )
 
-    to_file_path, extension = os.path.splitext(to_file_path)
-    extension_type = Extension[extension.replace(".", "")]
-    format = get_format(extension_type)
-    language = get_language(extension_type)
-    overwrite = format != format.DBC
+    # to_file_path, extension = os.path.splitext(to_file_path)
+    # extension_type = Extension[extension.replace(".", "")]
+    # format = get_format(extension_type)
+    # language = get_language(extension_type)
+    to_file_path, _ = os.path.splitext(to_file_path)
+    # format = Format.AUTO
 
     action = {
         "action": "import",
         "from_file_path": from_file_path,
         "to_file_path": to_file_path,
-        "format": format.name,
-        "language": language.name,
-        "overwrite": overwrite,
     }
-    workspace_import(from_file_path, to_file_path, format, language, overwrite)
+
+    workspace_import(
+        form_path = from_file_path, 
+        to_path = to_file_path
+    )
 
     return action
 
@@ -331,7 +344,7 @@ def _modify_deploy_path(
     elif deploy_mode == DeployMode.PARENT:
         modify_to = f"{modifier.replace('/.','')}{root}"
         new_path = deploy_dir.replace(root, modify_to)
-
+    
     elif deploy_mode == DeployMode.CHILD:
         modify_to = f"{root}{modifier}"
         new_path = deploy_dir.replace(root, modify_to)
