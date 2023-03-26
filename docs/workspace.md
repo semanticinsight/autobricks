@@ -30,52 +30,24 @@ workspace_import_dir(
 | `DeployMode.ROOT_CHILD` | Deploys the content in the `source_dir` path into a directory path matching the `source_dir` path but with the target_dir directory injected following the root dir of the `source_dir` path |
 
 
-## get_format
-
-Covnerts a notebook extension into a format.
-
-```python
-get_format(extension: Extension) -> Format
-```
-
-Extension is defined as follows:
-
-```python
-class Extension(Enum):
-    py = 1
-    html = 2
-    ipynb = 3
-    dbc = 4
-```
-
-The returned format is defined as follows:
-
-```python
-class Format(Enum):
-    SOURCE = 1
-    HTML = 2
-    JUPYTER = 3
-    DBC = 4
-```
-
-
 ## [workspace_import](https://docs.databricks.com/dev-tools/api/latest/workspace.html#import)
 
 Import a notebook or the contents of an entire directory. If path already exists and overwrite is set to false, this call returns an error RESOURCE_ALREADY_EXISTS. You can use only DBC format to import a directory. Maps directly to the [API call](https://docs.databricks.com/dev-tools/api/latest/workspace.html#import) where the return details are specified.
 
 ```python
+
 workspace_import(
-    form_path: str, 
+    from_path: str, 
     to_path: str, 
-    format: Format, 
-    language: Language, 
-    overwrite: True
+    format: Format=Format.AUTO, 
+    language: Language=None, 
+    overwrite=True
 )-> dict
 ```
 
 - `from_path` - the local file path
 - `to_path` - databricks workspace destination path
-- `format` - Is the format of the notebook
+- `format` - Is the format of the notebook - Deprecated since now supports AUTO and lets the databricks api figure it out.
 
 ```python
 class Format(Enum):

@@ -49,20 +49,6 @@ class Language(Enum):
     SQL = "SQL"
     R = "R"
 
-
-def get_format(extension: Extension):
-
-    if extension == Extension.py:
-        return Format.SOURCE
-    elif extension == Extension.sql:
-        return Format.SOURCE
-    elif extension == Extension.html:
-        return Format.HTML
-    elif extension == Extension.ipynb:
-        return Format.JUPYTER
-    elif extension == Extension.dbc:
-        return Format.DBC
-
 def get_language(extension: Extension):
 
     if extension == Extension.py:
@@ -288,13 +274,6 @@ def _deploy_file(
     to_file_path = _modify_deploy_path(
         to_file_path, source_dir, target_dir, deploy_mode
     )
-
-    # to_file_path, extension = os.path.splitext(to_file_path)
-    # extension_type = Extension[extension.replace(".", "")]
-    # format = get_format(extension_type)
-    # language = get_language(extension_type)
-    # to_file_path, _ = os.path.splitext(to_file_path)
-    # format = Format.AUTO
 
     action = {
         "action": "import",
