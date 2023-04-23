@@ -95,5 +95,5 @@ configuration = {
     "resource_group": os.getenv("RESOURCE_GROUP"),
     "subscription_id": os.getenv("SUBSCRIPTION_ID"),
     "auth_type": os.getenv("AUTH_TYPE", "SERVICE_PRINCIPAL"),
-    "databricks_api_host": os.getenv("DATABRICKS_API_HOST")
+    "databricks_api_host": os.getenv("DATABRICKS_API_HOST"),
 }

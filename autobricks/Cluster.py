@@ -34,7 +34,7 @@ class ClusterAction(Enum):
 
 def cluster_name_exists(name: str):
 
-    found = cluster_get_name_ids(name)
+    found = ""  # cluster_get_name_ids(name)
 
     return len(found) > 0
 
@@ -74,7 +74,7 @@ def cluster_action(cluster_id: str, cluster_action: ClusterAction):
     cluster = dict()
     cluster["cluster_id"] = cluster_id
 
-    logger.info(f"{cluster_action.name} cluster: {cluster_id}")
+    _logger.info(f"{cluster_action.name} cluster: {cluster_id}")
 
     response = _api_service.api_post(endpoint, action, cluster)
 
@@ -102,6 +102,7 @@ def clusters_create(
                 allow_duplicate_names,
                 init_script_path,
             )
+            _logger.debug(str(response))
 
 
 def cluster_create(
@@ -179,7 +180,7 @@ def cluster_delete_clusters(clusters: list):
         try:
             cluster_action(c, ClusterAction.UNPIN)
 
-        except Exception as e:
+        except Exception:
             _logger.info(f"Warning: Failed to unpin cluster_id={c}")
 
         cluster_action(c, ClusterAction.DELETE)
@@ -213,8 +214,8 @@ def cluster_is_terminated(cluster_id: str):
 
 def cluster_get(cluster_id: str):
 
-    query = f"cluster_id={cluster_id}"
-    return _api_service.api_get(endpoint, "get", query=query)
+    params = {"cluster_id": cluster_id}
+    return _api_service.api_get(endpoint, "get", params=params)
 
 
 def cluster_wait_until_state(

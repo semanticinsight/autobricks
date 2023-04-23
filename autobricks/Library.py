@@ -27,7 +27,7 @@ def _is_wheel(entry):
 
     ret = entry.path.endswith(".whl")
     ret = ret and entry.is_file()
-    ret = ret and not ".dirty" in entry.path
+    ret = ret and ".dirty" not in entry.path
 
     return ret
 

@@ -45,7 +45,7 @@ class DatabricksBuild(distutils.cmd.Command):
 
         ret = entry.path.endswith(".whl")
         ret = ret and entry.is_file()
-        ret = ret and not ".dirty" in entry.path
+        ret = ret and ".dirty" not in entry.path
 
         return ret
 
@@ -120,6 +120,7 @@ class DatabricksBuild(distutils.cmd.Command):
 
                 with open(entry.path, "w") as file:
                     data = yaml.dump(cluster_defn, file)
+                    _logger.debug(data)
 
                 if init_scripts:
                     self._build_init_scripts(init_scripts, entry.name)
@@ -139,21 +140,21 @@ class DatabricksBuild(distutils.cmd.Command):
                     with open(to_path, "w") as to_file:
                         shell = from_file.readlines()
 
-                        for l in shell:
+                        for line in shell:
 
-                            if l[0:11] == "pip install":
-                                path = l.split(" ")[-1]
+                            if line[0:11] == "pip install":
+                                path = line.split(" ")[-1]
                                 filename = os.path.basename(path)
                                 path = path.replace(filename, "")
-                                filename, ext = os.path.splitext(filename)
+                                filename, _ = os.path.splitext(filename)
                                 wheel = self._get_latest_wheel(self.dist, filename)
                                 if wheel:
                                     wheel_filename = os.path.basename(wheel.path)
                                     to_file.write(f"pip install {path}{wheel_filename}")
                                 else:
-                                    to_file.write(l)
+                                    to_file.write(line)
                             else:
-                                to_file.write(l)
+                                to_file.write(line)
 
                 os.remove(from_path)
 

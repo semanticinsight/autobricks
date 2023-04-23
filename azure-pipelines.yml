@@ -25,10 +25,9 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-  # - script: |
-  #   python -m pip install flake8
-  #   flake8 .
-  # displayName: 'Run lint tests'
+- script: |
+    python -m flake8 ./autobricks
+  displayName: 'Run lint tests'
 
 - script: |
     python setup.py sdist bdist_wheel
@@ -84,7 +83,6 @@ steps:
 
 - task: TwineAuthenticate@0
   inputs:
-    # artifactFeeds: 'sibytes'
     externalFeeds: 'pypi'
   displayName: 'Authenticate Twine'
 

@@ -1,6 +1,10 @@
 from ._auth_factory import auth_factory, AuthenticationType
 from ._auth import Auth
-from ._base_api import base_api_get as _base_api_get, base_api_post as _base_api_post
+from ._base_api import (
+    base_api_get as _base_api_get,
+    base_api_post as _base_api_post,
+    base_api_delete as _base_api_delete,
+)
 from . import autobricks_logging
 from ._exceptions import AutobricksConfigurationInvalid, AutobricksResponseJsonError
 from ._configuration import configuration
@@ -9,7 +13,8 @@ import json
 _logger = autobricks_logging.get_logger(__name__)
 
 
-API_VERSION = "2.0"
+_API_VERSION = "2.0"
+_PREVIEW = "preview"
 
 
 class ApiService:
@@ -37,7 +42,10 @@ class ApiService:
             raise e
 
         try:
-            self.host = _config["databricks_api_host"]
+            self.host: str = _config["databricks_api_host"]
+            if self.host.endswith("/"):
+                self.host = self.host[:-1]
+
             _logger.debug(f"Databricks REST endpoint set as {self.host}")
         except KeyError:
             e = AutobricksConfigurationInvalid("databricks_api_host")
@@ -47,7 +55,7 @@ class ApiService:
         try:
             _logger.debug(f"Setting AuthorisationType as {auth_type_str}")
             self.auth_type: AuthenticationType = AuthenticationType[auth_type_str]
-        except:
+        except Exception:
             e = AutobricksConfigurationInvalid(
                 "auth_type", value=auth_type_str, valid_values=AuthenticationType
             )
@@ -61,12 +69,24 @@ class ApiService:
         _header_json = json.dumps(self._headers, indent=4)
         _logger.debug(_header_json)
 
-    def api_get(self, api: str, function: str, data: dict = None, query: str = None):
+    def api_get(
+        self,
+        api: str,
+        function: str,
+        data: dict = None,
+        params=None,
+        preview: bool = False,
+        api_version=_API_VERSION,
+    ):
 
-        url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
-        if query:
-            url = f"{url}?{query}"
-        response = _base_api_get(url=url, headers=self._headers, json=data)
+        if preview:
+            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
+        else:
+            url = f"{self.host}/api/{api_version}/{api}/{function}"
+
+        response = _base_api_get(
+            url=url, headers=self._headers, json=data, params=params
+        )
 
         try:
             json = response.json()
@@ -77,9 +97,48 @@ class ApiService:
 
         return json
 
-    def api_post(self, api: str, function: str, data: dict):
+    def api_delete(
+        self,
+        api: str,
+        function: str,
+        data: dict = None,
+        params=None,
+        preview: bool = False,
+        api_version=_API_VERSION,
+    ):
 
-        url = f"{self.host}/api/{API_VERSION}/{api}/{function}"
+        if preview:
+            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
+        else:
+            url = f"{self.host}/api/{api_version}/{api}/{function}"
+
+        response = _base_api_delete(
+            url=url, headers=self._headers, json=data, params=params
+        )
+
+        try:
+            json = response.json()
+        except Exception:
+            ex = AutobricksResponseJsonError(url, "DELETE", data, response.text)
+            _logger.error(ex.message)
+            raise ex
+
+        return json
+
+    def api_post(
+        self,
+        api: str,
+        function: str,
+        data: dict,
+        preview: bool = False,
+        api_version=_API_VERSION,
+    ):
+
+        if preview:
+            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
+        else:
+            url = f"{self.host}/api/{api_version}/{api}/{function}"
+
         response = _base_api_post(url=url, headers=self._headers, json=data)
 
         try:

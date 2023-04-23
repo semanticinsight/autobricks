@@ -11,6 +11,7 @@ from ._exceptions import AutobricksAuthTypeNotRegistered
 
 _logger = autobricks_logging.get_logger(__name__)
 
+
 class AuthenticationType(Enum):
 
     USER = 1

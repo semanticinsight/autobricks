@@ -1,4 +1,5 @@
 from .api_service import ApiService, autobricks_logging
+from typing import List, Union
 
 from ._decode_utils import (
     base64_encode,
@@ -49,6 +50,15 @@ class Language(Enum):
     SQL = "SQL"
     R = "R"
 
+
+class ObjectType(Enum):
+    DIRECTORY = "DIRECTORY"
+    NOTEBOOK = "NOTEBOOK"
+    LIBRARY = "LIBRARY"
+    FILE = "FILE"
+    REPO = "REPO"
+
+
 def get_language(extension: Extension):
 
     if extension == Extension.py:
@@ -60,7 +70,11 @@ def get_language(extension: Extension):
 
 
 def workspace_import(
-    from_path: str, to_path: str, format: Format=Format.AUTO, language: Language=None, overwrite=True
+    from_path: str,
+    to_path: str,
+    format: Format = Format.AUTO,
+    language: Language = None,
+    overwrite=True,
 ):
 
     with open(from_path, "rb") as file:
@@ -109,11 +123,68 @@ def workspace_mkdirs(path: str):
     return _api_service.api_post(endpoint, "mkdirs", data)
 
 
+def workspace_get_folder_id(path: str):
+
+    dir = os.path.basename(path)
+    parent = path.replace(dir, "")
+    ls = workspace_list(parent)["objects"]
+    try:
+        gen = (d for d in ls if d["path"] == path)
+        dir_data = next(gen)
+        object_id = dir_data["object_id"]
+    except Exception as e:
+        msg = f"Path {path} not found in directory listing {ls}"
+        raise Exception(msg) from e
+
+    return object_id
+
+
+def workspace_find_paths(
+    folder_ids: List[str], root_folders: Union[str, List[str]] = None
+):
+
+    if not root_folders:
+        return _workspace_find_paths(folder_ids)
+    if isinstance(root_folders, str):
+        return _workspace_find_paths(folder_ids, f"/{root_folders}")
+    if isinstance(root_folders, list):
+        workpsace_paths = {}
+        for folder in root_folders:
+            paths = _workspace_find_paths(folder_ids, f"/{folder}")
+            workpsace_paths = {**workpsace_paths, **paths}
+
+        return workpsace_paths
+
+
+def _workspace_find_paths(folder_ids: List[str], path="/"):
+    folder_ids = list(dict.fromkeys(folder_ids))
+    ls = workspace_list(path)
+    folder_paths = {}
+    if ls:
+        ls = ls["objects"]
+
+        folder_paths = {}
+
+        for folder in ls:
+            id = folder["object_id"]
+            object_type = ObjectType(folder["object_type"])
+            path = folder["path"]
+            if str(id) in folder_ids:
+                folder_paths[str(id)] = folder["path"]
+            if object_type == ObjectType.DIRECTORY:
+                sub_folder_paths = _workspace_find_paths(folder_ids, path)
+                folder_paths = {**folder_paths, **sub_folder_paths}
+
+    return folder_paths
+
+
 def workspace_export(from_path: str, format: Format, to_path: str):
 
     data = {"path": from_path, "format": format.name.upper(), "direct_download": False}
 
-    _logger.info(f"workspace exporting from path {from_path} format {format.name.upper()}")
+    _logger.info(
+        f"workspace exporting from path {from_path} format {format.name.upper()}"
+    )
     response = _api_service.api_get(endpoint, "export", data)
 
     file_type = response["file_type"]
@@ -159,7 +230,7 @@ def workspace_dir_exists(path: str):
 
     try:
         reponse = workspace_get_status(path)
-    except Exception as e:
+    except Exception:
         return False
 
     return reponse.get("object_type") == "DIRECTORY" and reponse.get("path") == path
@@ -169,7 +240,7 @@ def workspace_notebook_exists(path: str):
 
     try:
         reponse = workspace_get_status(path)
-    except Exception as e:
+    except Exception:
         return False
 
     return reponse.get("object_type") == "NOTEBOOK" and reponse.get("path") == path
@@ -281,10 +352,7 @@ def _deploy_file(
         "to_file_path": to_file_path,
     }
 
-    workspace_import(
-        from_path = from_file_path, 
-        to_path = to_file_path
-    )
+    workspace_import(from_path=from_file_path, to_path=to_file_path)
 
     return action
 
@@ -322,7 +390,7 @@ def _modify_deploy_path(
     elif deploy_mode == DeployMode.PARENT:
         modify_to = f"{modifier.replace('/.','')}{root}"
         new_path = deploy_dir.replace(root, modify_to)
-    
+
     elif deploy_mode == DeployMode.CHILD:
         modify_to = f"{root}{modifier}"
         new_path = deploy_dir.replace(root, modify_to)

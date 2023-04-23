@@ -15,8 +15,9 @@ _api_service = ApiService()
 
 def job_run_get(run_id: int):
 
+    params = {"run_id": run_id}
     try:
-        response = _api_service.api_get(endpoint, "runs/get", query=f"run_id={run_id}")
+        response = _api_service.api_get(endpoint, "runs/get", params=params)
     except Exception as e:
         response = {"run_id": -1, "message": str(e)}
 
@@ -34,7 +35,7 @@ def job_run_delete(run_id: int):
     data = {"run_id": run_id}
     try:
         response = _api_service.api_post(endpoint, "runs/delete", data)
-    except Exception as e:
+    except Exception:
         response = {}
 
     return response
@@ -96,7 +97,6 @@ def job_run_notebook(
 
     fmt_notebook_path = format_path_for(notebook_path, OsEnum.LINUX)
 
-    start_time = time.time()
     response = job_run_submit(
         fmt_notebook_path,
         name,

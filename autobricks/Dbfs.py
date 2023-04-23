@@ -1,7 +1,8 @@
 from .api_service import ApiService, autobricks_logging
 from ._decode_utils import base64_decode, format_path_for_os
 import base64
-import os, fnmatch
+import os
+import fnmatch
 
 _logger = autobricks_logging.get_logger(__name__)
 
