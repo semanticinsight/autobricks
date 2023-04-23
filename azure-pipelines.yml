@@ -3,9 +3,9 @@ trigger:
     include:
     - main
 
-variables:
-- group: data-platform-kv
-- group: databricks
+# variables:
+# - group: data-platform-kv
+# - group: databricks
 
 pool:
   vmImage: 'ubuntu-latest'
