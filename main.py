@@ -1,30 +1,16 @@
 import os
-from autobricks import Workspace
+from autobricks import Job
+import yaml
 
 ROOT_DIR = os.getenv("ROOT_DIR")
-WORKSPACE_ROOT = os.getenv("WORKSPACE_ROOT")
-WORKSPACE_SUBDIRS:str = os.getenv("WORKSPACE_SUBDIRS", None)
 
-from_notebook_root = f"{ROOT_DIR}test/artefacts/notebooks"
-target_dir = f"/{WORKSPACE_ROOT}/"
 
-if WORKSPACE_SUBDIRS:
-    sub_folders = [d.strip() for d in WORKSPACE_SUBDIRS.split(",")]
+path = os.path.join(ROOT_DIR, "Databricks/Workflows/" "workflow.yaml")
 
-    for f in sub_folders:
 
-        source_dir = f"/{f}"
-        Workspace.workspace_import_dir(
-            from_notebook_root=from_notebook_root,
-            source_dir=source_dir,
-            target_dir=target_dir,
-            deploy_mode=Workspace.DeployMode.PARENT
-        )
-else:
+with open(path, "r", encoding="utf-8")as f:
+    data = yaml.safe_load(f)
 
-    Workspace.workspace_import_dir(
-        from_notebook_root=from_notebook_root,
-        # source_dir=source_dir,
-        target_dir=target_dir,
-        deploy_mode=Workspace.DeployMode.PARENT
-    )
+name = data["name"]
+
+Job.job_recreate(data)

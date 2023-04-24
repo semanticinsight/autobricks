@@ -1,139 +1,169 @@
-from ._decode_utils import (
-    format_path_for,
-    OS as OsEnum,
-)
 from .api_service import ApiService, autobricks_logging
-from uuid import UUID
-import time
+from enum import Enum
+from typing import Union
 
 _logger = autobricks_logging.get_logger(__name__)
 
 endpoint = "jobs"
-
+_JOBS_API_VERSION = "2.1"
 _api_service = ApiService()
 
+class JobRunException(Exception):
+    def __init__(self, run_id: int):
+        self.message = f"Failed on run_id={run_id}"
+        super().__init__(self.message)
+
+class JobException(Exception):
+    def __init__(self, name: Union[str,int]):
+        if isinstance(name, int):
+            msg = f"Failed on job job_id={name}"
+        else:
+            msg = f"Failed on job name={name}"
+
+        self.message = msg
+        super().__init__(self.message)
+
+class JobRunType(Enum):
+
+    JOB_RUN = "JOB_RUN"
+    WORKFLOW_RUN = "WORKFLOW_RUN"
+    SUBMIT_RUN = "SUBMIT_RUN"
 
 def job_run_get(run_id: int):
 
     params = {"run_id": run_id}
     try:
-        response = _api_service.api_get(endpoint, "runs/get", params=params)
-    except Exception as e:
-        response = {"run_id": -1, "message": str(e)}
+        response = _api_service.api_get(
+            endpoint, "runs/get", params=params, api_version=_JOBS_API_VERSION
+    )
+    except Exception:
+        raise JobRunException(run_id)
 
     return response
 
 
-def job_runs_list():
+def job_runs_list(
+        active_only:bool=False,
+        completed_only:bool=False,
+        job_id:int = None,
+        offset:int = 0,
+        limit:int = 25,
+        run_type:JobRunType=JobRunType.JOB_RUN,
+        expand_tasks=False,
+        start_time_from:int=None,
+        start_time_to:int=None
+):
+    
+    params = {
+        "active_only": active_only,
+        "completed_only": completed_only,
+        "job_id": job_id,
+        "offset": offset,
+        "limit": limit,
+        "run_type": run_type.value,
+        "expand_tasks": expand_tasks,
+        "start_time_from": start_time_from,
+        "start_time_to":start_time_to
+    }
+    params = {k:v for k, v in params.items() if v is not None}
 
-    response = _api_service.api_get(endpoint, "runs/list")
-
+    response = _api_service.api_get(
+        endpoint, "runs/list", 
+        api_version=_JOBS_API_VERSION
+    )
+    
     return response
 
 
 def job_run_delete(run_id: int):
     data = {"run_id": run_id}
     try:
-        response = _api_service.api_post(endpoint, "runs/delete", data)
+        response = _api_service.api_post(endpoint, "runs/delete", data, api_version=_JOBS_API_VERSION)
     except Exception:
         response = {}
 
     return response
 
 
-def job_run_submit(
-    notebook_path: str,
-    run_name: str = "default",
-    spark_version: str = "7.3.x-scala2.12",
-    node_type_id: str = "Standard_DS3_v2",
-    driver_node_type_id: str = "Standard_DS3_v2",
-    num_workers: int = 1,
-    timeout_seconds: int = 900,
-    idempotency_token: UUID = None,
-    cluster_id: str = None,
-):
+def job_create(job:dict):
 
-    fmt_notebook_path = format_path_for(notebook_path, OsEnum.LINUX)
+    name = job.get("name", "Unknown")
+    try:
+        response = _api_service.api_post(endpoint, "create", job, api_version=_JOBS_API_VERSION)
+    except Exception:
+        raise JobException(name)
 
-    data = {
-        "notebook_task": {"notebook_path": fmt_notebook_path},
-        "run_name": run_name,
-        "libraries": [],
-        "timeout_seconds": timeout_seconds,
-    }
-
-    if cluster_id:
-        _logger.info(
-            f"Configuring job {fmt_notebook_path} to run on existing cluster {cluster_id}"
-        )
-        data["existing_cluster_id"] = cluster_id
-
-    else:
-        _logger.info(
-            f"Configuring job {fmt_notebook_path} to run on a new cluster {node_type_id}"
-        )
-        data["new_cluster"] = {
-            "spark_version": spark_version,
-            "node_type_id": node_type_id,
-            "driver_node_type_id": driver_node_type_id,
-            "num_workers": num_workers
-            # "autotermination_minutes": autotermination_minutes
-        }
-
-    if idempotency_token:
-        data["idempotency_token"] = str(idempotency_token)
-
-    _logger.info(f"Submitting job for notebook {fmt_notebook_path}")
-    return _api_service.api_post(endpoint, "runs/submit", data)
+    return response
 
 
-def job_run_notebook(
-    notebook_path: str,
-    name: str = "default",
-    idempotency_token: UUID = None,
-    cluster_id: str = None,
-    wait_seconds: int = 5,
-):
+def job_delete(job_id: int):
 
-    fmt_notebook_path = format_path_for(notebook_path, OsEnum.LINUX)
+    data = {"job_id": job_id}
+    try:
+        response = _api_service.api_post(endpoint, "delete", data, api_version=_JOBS_API_VERSION)
+    except Exception:
+        raise JobException(job_id)
 
-    response = job_run_submit(
-        fmt_notebook_path,
-        name,
-        idempotency_token=idempotency_token,
-        cluster_id=cluster_id,
-    )
+    return response
 
-    run_id = response["run_id"]
-    previous_state = {"run_id": run_id}
 
-    _logger.info(f"Notebook {fmt_notebook_path} job has start on run {run_id}")
+def job_update(job:dict):
+
+    name = job.get("name", "Unknown")
+    try:
+        response = _api_service.api_post(endpoint, "update", job, api_version=_JOBS_API_VERSION)
+    except Exception:
+        raise JobException(name)
+
+    return response
+
+
+def job_get_by_id(job_id: int):
+
+    params = {"job_id": job_id}
 
     try:
-        run_page_url = None
+        response = _api_service.api_get(
+            endpoint, "get", 
+            api_version=_JOBS_API_VERSION,
+            params=params
+        )
+    except Exception:
+        raise JobException(job_id)
+    
+    return response
 
-        while True:
 
-            response = job_run_get(run_id)
+def job_get_by_name(name:str, expand_tasks:bool=False):
 
-            state = response["state"]
-            life_cycle_state = response["state"]["life_cycle_state"]
-            run_page_url = response["run_page_url"]
+    params = {"name": name, "expand_tasks":expand_tasks}
+    try:
+        response = _api_service.api_get(
+            endpoint, "list", 
+            api_version=_JOBS_API_VERSION,
+            params=params
+        )
+    except Exception:
+        raise JobException(name)
+    
+    return response.get("jobs")
 
-            if state != previous_state:
-                _logger.info(
-                    f"Notebook:{fmt_notebook_path} State:{life_cycle_state} Url:{run_page_url}"
-                )
-                previous_state = state
 
-            time.sleep(wait_seconds)
+def job_get_id(name:str):
 
-            if life_cycle_state == "TERMINATED":
-                break
+    jobs = job_get_by_name(name)
+    if jobs:
+        job_id = jobs[0].get("job_id", False)
+        return job_id
+    else:
+        return None
+    
+def job_recreate(job:dict):
 
-    except Exception as e:
-        msg = f"Notebook:{fmt_notebook_path} State:ERROR Url:{run_page_url} Message:{str(e)}"
-        _logger.error(msg)
-        raise Exception(msg)
+    name = job.get("name", "Unknown")
 
-    return state
+    job_id = job_get_id(name)
+    if job_id:
+        job_delete(job_id=job_id)
+
+    job_create(job=job)
