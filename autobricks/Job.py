@@ -1,6 +1,8 @@
 from .api_service import ApiService, autobricks_logging
 from enum import Enum
-from typing import Union
+from typing import Union, List
+from ._common import get_metadata_format, load_format, tags_exist_in
+import os
 
 _logger = autobricks_logging.get_logger(__name__)
 
@@ -175,3 +177,22 @@ def job_recreate(job: dict):
         job_delete(job_id=job_id)
 
     job_create(job=job)
+
+
+def job_import_jobs(from_path: str, tags: Union[str, List[str], None] = None):
+
+    for root, _, files in os.walk(from_path):
+
+        config_files = [f for f in files if get_metadata_format(f)]
+
+        for f in config_files:
+            filename = os.path.join(root, f)
+            filename = os.path.abspath(filename)
+            with open(filename, "r", encoding="utf-8") as f:
+                metadata_format = get_metadata_format(filename)
+                data: dict = load_format(f, metadata_format)
+
+            in_tags = data.get("tags")
+
+            if tags_exist_in(tags, in_tags):
+                job_recreate(data)

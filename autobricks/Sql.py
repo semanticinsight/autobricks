@@ -12,7 +12,7 @@ import os
 import yaml
 import json
 from enum import Enum
-from io import TextIOWrapper
+
 from typing import Union, List
 from .Workspace import (
     workspace_dir_exists,
@@ -20,6 +20,7 @@ from .Workspace import (
     workspace_get_folder_id,
     workspace_find_paths,
 )
+from ._common import MetadataFormat, get_metadata_format, load_format, tags_exist_in
 
 
 _logger = _logging.get_logger(__name__)
@@ -45,11 +46,6 @@ class ObjectType(Enum):
 class AclCredential(Enum):
     user_acl = "user_name"
     group_acl = "group_name"
-
-
-class MetadataFormat(Enum):
-    yaml = "yaml"
-    json = "json"
 
 
 def _get_credential_type(name: str):
@@ -126,23 +122,6 @@ def queries(page_size: int = 10, order: str = "name", q=None):
     return results
 
 
-def _tags_exist_in(tags: Union[str, List[str], None], in_tags: List[str]):
-    """
-    tags: Union[str, List[str], None]   Tags that want to check are in the superset list. If there are no tags returns true
-    in_tags: List[str]                  The target superset of tags you want to check if the tags are in
-
-    This is a utility function to check is a set of tags are in a superset of tags.
-    If the tags are none then it assumes that no tag filtered is being applied and
-    therefore returns true.
-    """
-    if isinstance(tags, str):
-        return tags in in_tags
-    elif isinstance(tags, list):
-        return set(tags).issubset(set(in_tags))
-    else:
-        return True
-
-
 def set_acl(
     acl_name: Union[str, List[str]],
     permission: PermissionLevel,
@@ -204,7 +183,7 @@ def queries_export_sql(
     folder_ids = [
         s["options"]["parent"].replace(_FOLDERS, "")
         for s in sql_queries
-        if _tags_exist_in(tags, s["tags"])
+        if tags_exist_in(tags, s["tags"])
     ]
     workspace_paths = workspace_find_paths(folder_ids, root_folders)
     name_sql = {
@@ -219,7 +198,7 @@ def queries_export_sql(
             "tags": s["tags"],
         }
         for s in sql_queries
-        if _tags_exist_in(tags, s["tags"])
+        if tags_exist_in(tags, s["tags"])
     }
 
     _logger.debug(f"matched {len(name_sql.keys())} queries")
@@ -347,34 +326,6 @@ def queries_import_sql(metadata: dict):
     )
 
 
-def _get_metadata_format(filename: str):
-    """
-    filename:str name of the file with the extension
-
-    determines the supported format of the metadata files.
-    """
-    _, ext = os.path.splitext(filename)
-    try:
-        ext = MetadataFormat(ext[1:])
-        return ext
-    except Exception:
-        return None
-
-
-def _load_format(f: TextIOWrapper, format: MetadataFormat):
-    """
-    f: TextIOWrapper        file stream from an open command
-    format: MetadataFormat  metadata format
-
-    reads the filestream using the correct library to parse the file format type
-    """
-    if format == MetadataFormat.yaml:
-        data = yaml.safe_load(f)
-    elif format == MetadataFormat.json:
-        data = json.load(f)
-    return data
-
-
 def _get_folder_id(workspace_path: str):
     if not workspace_dir_exists(workspace_path):
         workspace_mkdirs(workspace_path)
@@ -402,19 +353,19 @@ def queries_import_sql_files(
     exceptions = []
     for root, _, files in os.walk(from_path):
 
-        config_files = [f for f in files if _get_metadata_format(f)]
+        config_files = [f for f in files if get_metadata_format(f)]
 
         for f in config_files:
 
             filename = os.path.join(root, f)
             filename = os.path.abspath(filename)
             with open(filename, "r", encoding="utf-8") as f:
-                metadata_format = _get_metadata_format(filename)
-                data: dict = _load_format(f, metadata_format)
+                metadata_format = get_metadata_format(filename)
+                data: dict = load_format(f, metadata_format)
 
             in_tags = data["tags"]
 
-            if _tags_exist_in(tags, in_tags):
+            if tags_exist_in(tags, in_tags):
 
                 filename = data["query"]
                 sql_file_path = os.path.abspath(root)

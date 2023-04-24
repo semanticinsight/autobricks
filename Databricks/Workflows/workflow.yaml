@@ -1,5 +1,5 @@
 {
-    "name": "dbx-pattern: autoloader-raw-schema-test",
+    "name": "dbx-pattern: autoloader-raw-schema",
     "email_notifications": {
         "on_start": [
             "shaun_chiburi@hotmail.com"
@@ -30,13 +30,35 @@
                 },
                 "source": "WORKSPACE"
             },
-            "existing_cluster_id": "0407-084948-1ov2zao",
+            "job_cluster_key": "dbx_patterns_job_cluster",
             "timeout_seconds": 0,
             "email_notifications": {},
             "notification_settings": {
                 "no_alert_for_skipped_runs": false,
                 "no_alert_for_canceled_runs": false,
                 "alert_on_last_attempt": false
+            }
+        }
+    ],
+    "job_clusters": [
+        {
+            "job_cluster_key": "dbx_patterns_job_cluster",
+            "new_cluster": {
+                "spark_version": "12.2.x-scala2.12",
+                "spark_conf": {
+                    "spark.databricks.delta.preview.enabled": "true"
+                },
+                "azure_attributes": {
+                    "first_on_demand": 1,
+                    "availability": "ON_DEMAND_AZURE",
+                    "spot_bid_max_price": 100
+                },
+                "node_type_id": "Standard_DS3_v2",
+                "enable_elastic_disk": true,
+                "policy_id": "8F631AA0F90027D5",
+                "data_security_mode": "USER_ISOLATION",
+                "runtime_engine": "STANDARD",
+                "num_workers": 1
             }
         }
     ],
