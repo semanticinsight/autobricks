@@ -171,7 +171,6 @@ def job_get_id(name: str):
 def job_recreate(job: dict):
 
     name = job.get("name", "Unknown")
-    
 
     job_id = job_get_id(name)
     _logger.info(f"Recreating job {name} job_id={job_id}")
