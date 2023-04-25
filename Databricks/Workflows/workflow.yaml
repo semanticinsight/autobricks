@@ -2,13 +2,13 @@
     "name": "dbx-pattern: autoloader-raw-schema",
     "email_notifications": {
         "on_start": [
-            "shaun_chiburi@hotmail.com"
+            "sibytes.yetl@gmail.com"
         ],
         "on_success": [
-            "shaun_chiburi@hotmail.com"
+            "sibytes.yetl@gmail.com"
         ],
         "on_failure": [
-            "shaun_chiburi@hotmail.com"
+            "sibytes.yetl@gmail.com"
         ],
         "no_alert_for_skipped_runs": false
     },
@@ -21,11 +21,10 @@
     "max_concurrent_runs": 1,
     "tasks": [
         {
-            "task_key": "load_raw_customers",
+            "task_key": "load_raw",
             "notebook_task": {
-                "notebook_path": "/Repos/shaun.ryan@shaunchiburihotmail.onmicrosoft.com/databricks-patterns/Databricks/Notebooks/Bronze/autoload_raw_schema",
+                "notebook_path": "/autobricks/Bronze/raw_load",
                 "base_parameters": {
-                    "table": "customers",
                     "process_id": "{{job_id}}"
                 },
                 "source": "WORKSPACE"
@@ -44,6 +43,7 @@
         {
             "job_cluster_key": "dbx_patterns_job_cluster",
             "new_cluster": {
+                "cluster_name": "",
                 "spark_version": "12.2.x-scala2.12",
                 "spark_conf": {
                     "spark.databricks.delta.preview.enabled": "true"

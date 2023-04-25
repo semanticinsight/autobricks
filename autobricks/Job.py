@@ -171,11 +171,16 @@ def job_get_id(name: str):
 def job_recreate(job: dict):
 
     name = job.get("name", "Unknown")
+    
 
     job_id = job_get_id(name)
+    _logger.info(f"Recreating job {name} job_id={job_id}")
+
     if job_id:
+        _logger.info(f"deleting job {name} job_id={job_id}")
         job_delete(job_id=job_id)
 
+    _logger.info(f"creating new job {name}")
     job_create(job=job)
 
 

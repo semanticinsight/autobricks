@@ -1,6 +1,5 @@
 import os
 from autobricks import Job
-import yaml
 
 ROOT_DIR = os.getenv("ROOT_DIR")
 
