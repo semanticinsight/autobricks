@@ -33,14 +33,12 @@ class ClusterAction(Enum):
 
 
 def cluster_name_exists(name: str):
-
     found = ""  # cluster_get_name_ids(name)
 
     return len(found) > 0
 
 
 def cluster_get_by_name(name: str):
-
     response = cluster_list()
     found = []
     if response:
@@ -50,7 +48,6 @@ def cluster_get_by_name(name: str):
 
 
 def cluster_action(cluster_id: str, cluster_action: ClusterAction):
-
     action: str
 
     if cluster_action == ClusterAction.PIN:
@@ -89,11 +86,9 @@ def clusters_create(
     allow_duplicate_names: bool = False,
     init_script_path: str = None,
 ):
-
     directory = os.path.abspath(cluster_defn_folder)
     for entry in os.scandir(directory):
         if entry.path.endswith(".yaml") and entry.is_file():
-
             response = cluster_create(
                 entry.path,
                 pin,
@@ -113,7 +108,6 @@ def cluster_create(
     allow_duplicate_names: bool = False,
     init_script_path: str = None,
 ):
-
     with open(cluster_defn_path, "r") as f:
         cluster_defn: dict = yaml.safe_load(f)
 
@@ -121,11 +115,8 @@ def cluster_create(
 
     # upload init script
     if cluster_defn.get("init_scripts"):
-
         for i in cluster_defn["init_scripts"]:
-
             if i.get("dbfs"):
-
                 to_path = i["dbfs"]["destination"]
                 from_path = os.path.abspath(f"{init_script_path}/{cluster_name}.sh")
                 dbfs_upload(from_path, to_path, overwrite=True)
@@ -141,14 +132,12 @@ def cluster_create(
     _logger.info(f"Found {len(clusters)} clusters with the name {cluster_name}")
 
     if len(clusters) > 0 and delete_if_exists:
-
         _logger.info(
             f"Cluster(s) named {cluster_name} already exist. Deleting existing clusters."
         )
         cluster_delete_clusters(clusters)
 
     if len(clusters) == 0 or delete_if_exists or allow_duplicate_names:
-
         _logger.info(f"Creating cluster {cluster_name}")
         response = _api_service.api_post(endpoint, "create", cluster_defn)
         cluster_id = response["cluster_id"]
@@ -162,7 +151,6 @@ def cluster_create(
         create_response = {"clusters": [create_response], "created": True}
 
     else:
-
         _logger.info(
             f"Cluster {cluster_name} already exists and delete_if_exists is disabled."
         )
@@ -172,7 +160,6 @@ def cluster_create(
 
 
 def cluster_delete_clusters(clusters: list):
-
     cluster_ids = [c["cluster_id"] for c in clusters]
     _logger.info(f"deleting clusters: {str(cluster_ids)}")
 
@@ -187,7 +174,6 @@ def cluster_delete_clusters(clusters: list):
 
 
 def cluster_list() -> dict:
-
     response = _api_service.api_get(endpoint, "list")
     if response == {}:
         return None
@@ -196,24 +182,20 @@ def cluster_list() -> dict:
 
 
 def get_cluster_state(cluster_id: str):
-
     cluster = cluster_get(cluster_id)
     state = ClusterState[cluster["state"]]
     return state
 
 
 def cluster_is_running(cluster_id: str):
-
     return get_cluster_state(cluster_id) == ClusterState.RUNNING
 
 
 def cluster_is_terminated(cluster_id: str):
-
     return get_cluster_state(cluster_id) == ClusterState.TERMINATED
 
 
 def cluster_get(cluster_id: str):
-
     params = {"cluster_id": cluster_id}
     return _api_service.api_get(endpoint, "get", params=params)
 
@@ -221,13 +203,11 @@ def cluster_get(cluster_id: str):
 def cluster_wait_until_state(
     cluster_id: str, cluster_state: ClusterState, wait_seconds: int = 10
 ):
-
     _logger.info(
         f"Waiting for the cluster_id {cluster_id} to the reach the state: {cluster_state.name}"
     )
 
     if cluster_state not in [ClusterState.RUNNING, ClusterState.TERMINATED]:
-
         msg = f"Waiting for a cluster state {cluster_state.name} isn't final and isn't valid"
         _logger.error(msg)
         raise Exception(msg)
@@ -236,7 +216,6 @@ def cluster_wait_until_state(
     _logger.info(f"The cluster_id {cluster_id} state: {previous_state.name}")
 
     while True:
-
         time.sleep(wait_seconds)
 
         cluster = cluster_get(cluster_id)
@@ -248,24 +227,20 @@ def cluster_wait_until_state(
             previous_state = state
 
         if state == ClusterState.ERROR:
-
             msg = f"The cluster_id {cluster_id} is in error state: {cluster['state_message']}"
             _logger.error(msg)
             raise Exception(msg)
 
         elif state == ClusterState.TERMINATED and cluster_state == ClusterState.RUNNING:
-
             msg = f"The cluster_id {cluster_id} {ClusterState.TERMINATED.name}: {cluster['state_message']}"
             _logger.error(msg)
             raise Exception(msg)
 
         elif state == cluster_state:
-
             break
 
 
 def cluster_has_tag(cluster: dict, tag_key: str, tag_value: str):
-
     if "custom_tags" in cluster:
         value = cluster["custom_tags"].get(tag_key)
         return value == tag_value
@@ -276,7 +251,6 @@ def cluster_has_tag(cluster: dict, tag_key: str, tag_value: str):
 def clusters_clear_down(
     tag_key: str = None, tag_value: str = None, show_only: bool = True
 ):
-
     clusters = cluster_list()
 
     if tag_key and tag_value:
@@ -309,7 +283,6 @@ def clusters_clear_down(
 
 
 def cluster_log_states():
-
     clusters = cluster_list()
     if clusters:
         for c in clusters["clusters"]:
@@ -319,7 +292,6 @@ def cluster_log_states():
 
 
 def cluster_run(cluster_id: str):
-
     if cluster_is_terminated(cluster_id):
         _logger.info(f"starting cluster {cluster_id}")
         cluster_action(cluster_id, ClusterAction.START)

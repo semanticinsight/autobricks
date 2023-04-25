@@ -21,14 +21,12 @@ class Wheel:
 
 
 class DatabricksBuild(distutils.cmd.Command):
-
     description = "Build databricks project directory"
     user_options = [
         ("directory=", None, "path to databricks project directory"),
     ]
 
     def _copy_directory(self, from_path: str, to_path: str):
-
         try:
             # delete the destination dir if exists
             if os.path.exists(to_path):
@@ -42,7 +40,6 @@ class DatabricksBuild(distutils.cmd.Command):
             print(f"Directory not copied. Error: {e}")
 
     def _is_wheel(self, entry):
-
         ret = entry.path.endswith(".whl")
         ret = ret and entry.is_file()
         ret = ret and ".dirty" not in entry.path
@@ -50,7 +47,6 @@ class DatabricksBuild(distutils.cmd.Command):
         return ret
 
     def _get_wheel_version(self, wheel_path: str):
-
         version = inspect_wheel(wheel_path)["version"].split(".")
 
         if len(version) > 3:
@@ -64,7 +60,6 @@ class DatabricksBuild(distutils.cmd.Command):
         return wheel
 
     def _get_latest_wheel(self, path: str, name: str = None):
-
         directory = os.path.abspath(path)
         wheels = [
             self._get_wheel_version(entry.path)
@@ -81,7 +76,6 @@ class DatabricksBuild(distutils.cmd.Command):
         return wheel
 
     def initialize_options(self):
-
         """Set default values for options."""
         self.directory = "./databricks"
         self.dist = "./dist"
@@ -96,7 +90,6 @@ class DatabricksBuild(distutils.cmd.Command):
             os.makedirs(self.databricks_dist_dir)
 
     def finalize_options(self):
-
         """Post-process options."""
         pass
         # if self.directory:
@@ -109,11 +102,9 @@ class DatabricksBuild(distutils.cmd.Command):
         semantic_version: str = "",
         init_script_path: str = None,
     ):
-
         directory = os.path.abspath(cluster_defn_folder)
         for entry in os.scandir(directory):
             if entry.path.endswith(".yaml") and entry.is_file():
-
                 cluster_defn, init_scripts = self._build_cluster_defn(
                     entry.path, semantic_version, init_script_path
                 )
@@ -126,12 +117,10 @@ class DatabricksBuild(distutils.cmd.Command):
                     self._build_init_scripts(init_scripts, entry.name)
 
     def _build_init_scripts(self, init_scripts: dict, cluster_defn_name: str):
-
         cluster_defn_name = cluster_defn_name.replace("yaml", "sh")
         from_path = f"{self.databricks_dist_dir}/init_scripts/{cluster_defn_name}"
 
         for i in init_scripts:
-
             if i.get("dbfs"):
                 to_path = os.path.basename(i["dbfs"]["destination"])
                 to_path = f"{self.databricks_dist_dir}/init_scripts/{to_path}"
@@ -141,7 +130,6 @@ class DatabricksBuild(distutils.cmd.Command):
                         shell = from_file.readlines()
 
                         for line in shell:
-
                             if line[0:11] == "pip install":
                                 path = line.split(" ")[-1]
                                 filename = os.path.basename(path)
@@ -164,7 +152,6 @@ class DatabricksBuild(distutils.cmd.Command):
         semantic_version: str = "",
         init_script_path: str = None,
     ):
-
         with open(cluster_defn_path, "r") as f:
             cluster_defn: dict = yaml.safe_load(f)
 
@@ -181,7 +168,6 @@ class DatabricksBuild(distutils.cmd.Command):
 
         # cluster log variable replacements
         if cluster_defn.get("cluster_log_conf"):
-
             log = cluster_defn["cluster_log_conf"].get("dbfs")
 
             if log:
@@ -192,11 +178,8 @@ class DatabricksBuild(distutils.cmd.Command):
         init_script = None
         # init script variable replacements
         if cluster_defn.get("init_scripts"):
-
             for i in cluster_defn["init_scripts"]:
-
                 if i.get("dbfs"):
-
                     to_path = i["dbfs"]["destination"].replace(
                         "{cluster_name}", cluster_name
                     )
@@ -207,7 +190,6 @@ class DatabricksBuild(distutils.cmd.Command):
         return cluster_defn, init_script
 
     def run(self):
-
         """Run the databricks poject build."""
         self.announce("Building databrics project", level=distutils.log.INFO)
 
@@ -217,7 +199,6 @@ class DatabricksBuild(distutils.cmd.Command):
         # builds are wiped out
         for entry in os.scandir(self.directory):
             if entry.is_dir() and entry.name != "dist":
-
                 # set the destination dir
                 to_path = f"{self.databricks_dist_dir}/{entry.name}"
 

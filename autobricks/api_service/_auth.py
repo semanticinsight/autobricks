@@ -22,7 +22,6 @@ class Auth(ABC):
 
 class UserAuth(Auth):
     def __init__(self, parameters: dict):
-
         try:
             self.bearer_token = parameters["dbutilstoken"]
         except KeyError:
@@ -35,7 +34,6 @@ class UserAuth(Auth):
 
 class SPAuth(Auth):
     def __init__(self, parameters: dict):
-
         self.sp_client_id = parameters["sp_client_id"]
         self.sp_client_secret = parameters["sp_client_secret"]
         self.ad_resource = parameters["ad_resource"]
@@ -64,7 +62,6 @@ class SPAuth(Auth):
 
 class SPMgmtEndpointAuth(SPAuth):
     def __init__(self, parameters: dict):
-
         # get AD token
         super().__init__(parameters)
 
@@ -83,7 +80,6 @@ class SPMgmtEndpointAuth(SPAuth):
         self.mgmt_access_token = response.json()["access_token"]
 
     def get_headers(self):
-
         url = f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
         headers = {
             "Authorization": f"Bearer {self.bearer_token}",
@@ -95,7 +91,6 @@ class SPMgmtEndpointAuth(SPAuth):
 
 class SPAdalAuth(Auth):
     def __init__(self, parameters: dict):
-
         self.sp_client_id = parameters["sp_client_id"]
         self.sp_client_secret = parameters["sp_client_secret"]
         self.ad_resource = parameters["ad_resource"]
@@ -119,7 +114,6 @@ class SPAdalAuth(Auth):
 
 class SPMgmtEndpointAdalAuth(SPAdalAuth):
     def __init__(self, parameters: dict):
-
         # get AD token
         super().__init__(parameters)
         self.mgmt_resource_endpoint = parameters["mgmt_resource_endpoint"]
@@ -137,7 +131,6 @@ class SPMgmtEndpointAdalAuth(SPAdalAuth):
         self.mgmt_access_token = response["accessToken"]
 
     def get_headers(self):
-
         url = f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Databricks/workspaces/{self.workspace_name}"
         headers = {
             "Authorization": f"Bearer {self.bearer_token}",

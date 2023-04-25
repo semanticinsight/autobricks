@@ -3,7 +3,6 @@ import os
 
 
 def get_logger(name: str = "root"):
-
     autobricks_logging = os.getenv("AUTOBRICKS_LOGGING")
 
     logging.basicConfig(

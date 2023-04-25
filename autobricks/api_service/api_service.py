@@ -19,7 +19,6 @@ _PREVIEW = "preview"
 
 class ApiService:
     def __init__(self, config: dict = None):
-
         _logger.info("Initialising ApiService")
 
         if config:
@@ -78,7 +77,6 @@ class ApiService:
         preview: bool = False,
         api_version=_API_VERSION,
     ):
-
         if preview:
             url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
         else:
@@ -106,7 +104,6 @@ class ApiService:
         preview: bool = False,
         api_version=_API_VERSION,
     ):
-
         if preview:
             url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
         else:
@@ -133,7 +130,6 @@ class ApiService:
         preview: bool = False,
         api_version=_API_VERSION,
     ):
-
         if preview:
             url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
         else:

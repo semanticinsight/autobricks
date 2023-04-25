@@ -60,7 +60,6 @@ class ObjectType(Enum):
 
 
 def get_language(extension: Extension):
-
     if extension == Extension.py:
         return Language.PYTHON
     elif extension == Extension.sql:
@@ -76,7 +75,6 @@ def workspace_import(
     language: Language = None,
     overwrite=True,
 ):
-
     with open(from_path, "rb") as file:
         content = base64_encode(file.read())
 
@@ -96,35 +94,30 @@ def workspace_import(
 
 
 def workspace_delete(path: str, recursive: True):
-
     data = {"path": path, "recursive": recursive}
     _logger.info(f"workspace deleting path {path} recursive {str(recursive)}")
     return _api_service.api_post(endpoint, "delete", data)
 
 
 def workspace_get_status(path: str):
-
     data = {"path": path}
     _logger.info(f"workspace getting status path {path}")
     return _api_service.api_get(endpoint, "get-status", data)
 
 
 def workspace_list(path: str):
-
     data = {"path": path}
     _logger.info(f"workspace listing path {path}")
     return _api_service.api_get(endpoint, "list", data)
 
 
 def workspace_mkdirs(path: str):
-
     data = {"path": path}
     _logger.info(f"workspace making dirs {path}")
     return _api_service.api_post(endpoint, "mkdirs", data)
 
 
 def workspace_get_folder_id(path: str):
-
     dir = os.path.basename(path)
     parent = path.replace(dir, "")
     ls = workspace_list(parent)["objects"]
@@ -142,7 +135,6 @@ def workspace_get_folder_id(path: str):
 def workspace_find_paths(
     folder_ids: List[str], root_folders: Union[str, List[str]] = None
 ):
-
     if not root_folders:
         return _workspace_find_paths(folder_ids)
     if isinstance(root_folders, str):
@@ -179,7 +171,6 @@ def _workspace_find_paths(folder_ids: List[str], path="/"):
 
 
 def workspace_export(from_path: str, format: Format, to_path: str):
-
     data = {"path": from_path, "format": format.name.upper(), "direct_download": False}
 
     _logger.info(
@@ -227,7 +218,6 @@ def workspace_export(from_path: str, format: Format, to_path: str):
 
 
 def workspace_dir_exists(path: str):
-
     try:
         reponse = workspace_get_status(path)
     except Exception:
@@ -237,7 +227,6 @@ def workspace_dir_exists(path: str):
 
 
 def workspace_notebook_exists(path: str):
-
     try:
         reponse = workspace_get_status(path)
     except Exception:
@@ -252,9 +241,7 @@ def workspace_import_dir(
     target_dir: str = None,
     deploy_mode: DeployMode = DeployMode.DEFAULT,
 ):
-
     if deploy_mode == DeployMode.DEFAULT and target_dir:
-
         _logger.error(
             f"target_dir is not required for {deploy_mode.name} deployment mode"
         )
@@ -263,7 +250,6 @@ def workspace_import_dir(
         )
 
     elif deploy_mode != DeployMode.DEFAULT and not target_dir:
-
         _logger.error(f"target_dir is required for {deploy_mode.name} deployment mode")
         raise Exception(
             f"target_dir is required for {deploy_mode.name} deployment mode"
@@ -287,7 +273,6 @@ def workspace_import_dir(
     )
 
     for root, subdirs, files in os.walk(from_root_path):
-
         deploy_dir = root.replace(from_root_path, "")
 
         _logger.debug(
@@ -295,7 +280,6 @@ def workspace_import_dir(
         )
 
         if deploy_dir.startswith(source_dir) or not source_dir or source_dir == "/":
-
             deploy_this = True
             if deploy_dir == "":
                 deploy_dir = "/"
@@ -307,7 +291,6 @@ def workspace_import_dir(
             )
 
         if deploy_this:
-
             _logger.debug(
                 f"Deploying dir source_dir={source_dir} deploy_dir={deploy_dir} target_dir={target_dir} deploy_mode={deploy_mode.name}"
             )
@@ -318,7 +301,6 @@ def workspace_import_dir(
 
             # deploy the notebooks
             for filename in files:
-
                 from_file_path = os.path.join(root, filename)
                 to_file_path = from_file_path.replace(from_root_path, "")
 
@@ -341,7 +323,6 @@ def _deploy_file(
     target_dir: str,
     deploy_mode: DeployMode,
 ):
-
     to_file_path = _modify_deploy_path(
         to_file_path, source_dir, target_dir, deploy_mode
     )
@@ -360,7 +341,6 @@ def _deploy_file(
 def _deploy_dir(
     source_dir: str, deploy_dir: str, target_dir: str, deploy_mode: DeployMode
 ):
-
     # insert the root sub-dir to support along side nested deployment if given.
     deploy_dir = _modify_deploy_path(deploy_dir, source_dir, target_dir, deploy_mode)
 
@@ -376,7 +356,6 @@ def _deploy_dir(
 def _modify_deploy_path(
     deploy_dir: str, root: str, modifier: str, deploy_mode: DeployMode
 ):
-
     _logger.debug(
         f"Modifying path based on deploy_mode={deploy_mode.name} path deploy_dir={deploy_dir} root={root} modifier={modifier}"
     )
@@ -396,7 +375,6 @@ def _modify_deploy_path(
         new_path = deploy_dir.replace(root, modify_to)
 
     elif deploy_mode == DeployMode.ROOT_CHILD:
-
         clean_modifier = modifier.replace("\\", "/")
         if clean_modifier.startswith("/"):
             clean_modifier = clean_modifier[1:]

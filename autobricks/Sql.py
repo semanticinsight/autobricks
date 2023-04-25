@@ -62,7 +62,6 @@ def _get_credential_type(name: str):
 
 
 def queries_delete(query_id: str):
-
     _logger.info(f"Delete query {query_id}")
     response = _api_service.api_delete(
         endpoint,
@@ -352,11 +351,9 @@ def queries_import_sql_files(
     sql_queries = []
     exceptions = []
     for root, _, files in os.walk(from_path):
-
         config_files = [f for f in files if get_metadata_format(f)]
 
         for f in config_files:
-
             filename = os.path.join(root, f)
             filename = os.path.abspath(filename)
             with open(filename, "r", encoding="utf-8") as f:
@@ -366,7 +363,6 @@ def queries_import_sql_files(
             in_tags = data["tags"]
 
             if tags_exist_in(tags, in_tags):
-
                 filename = data["query"]
                 sql_file_path = os.path.abspath(root)
                 sql_file_path = os.path.join(sql_file_path, filename)

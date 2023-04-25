@@ -29,14 +29,12 @@ class JobException(Exception):
 
 
 class JobRunType(Enum):
-
     JOB_RUN = "JOB_RUN"
     WORKFLOW_RUN = "WORKFLOW_RUN"
     SUBMIT_RUN = "SUBMIT_RUN"
 
 
 def job_run_get(run_id: int):
-
     params = {"run_id": run_id}
     try:
         response = _api_service.api_get(
@@ -59,7 +57,6 @@ def job_runs_list(
     start_time_from: int = None,
     start_time_to: int = None,
 ):
-
     params = {
         "active_only": active_only,
         "completed_only": completed_only,
@@ -93,7 +90,6 @@ def job_run_delete(run_id: int):
 
 
 def job_create(job: dict):
-
     name = job.get("name", "Unknown")
     try:
         response = _api_service.api_post(
@@ -106,7 +102,6 @@ def job_create(job: dict):
 
 
 def job_delete(job_id: int):
-
     data = {"job_id": job_id}
     try:
         response = _api_service.api_post(
@@ -119,7 +114,6 @@ def job_delete(job_id: int):
 
 
 def job_update(job: dict):
-
     name = job.get("name", "Unknown")
     try:
         response = _api_service.api_post(
@@ -132,7 +126,6 @@ def job_update(job: dict):
 
 
 def job_get_by_id(job_id: int):
-
     params = {"job_id": job_id}
 
     try:
@@ -146,7 +139,6 @@ def job_get_by_id(job_id: int):
 
 
 def job_get_by_name(name: str, expand_tasks: bool = False):
-
     params = {"name": name, "expand_tasks": expand_tasks}
     try:
         response = _api_service.api_get(
@@ -159,7 +151,6 @@ def job_get_by_name(name: str, expand_tasks: bool = False):
 
 
 def job_get_id(name: str):
-
     jobs = job_get_by_name(name)
     if jobs:
         job_id = jobs[0].get("job_id", False)
@@ -169,7 +160,6 @@ def job_get_id(name: str):
 
 
 def job_recreate(job: dict):
-
     name = job.get("name", "Unknown")
 
     job_id = job_get_id(name)
@@ -184,9 +174,7 @@ def job_recreate(job: dict):
 
 
 def job_import_jobs(from_path: str, tags: Union[str, List[str], None] = None):
-
     for root, _, files in os.walk(from_path):
-
         config_files = [f for f in files if get_metadata_format(f)]
 
         for f in config_files:

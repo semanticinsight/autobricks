@@ -13,7 +13,6 @@ _logger = autobricks_logging.get_logger(__name__)
 
 
 class AuthenticationType(Enum):
-
     USER = 1
     SERVICE_PRINCIPAL = 2
     SERVICE_PRINCIPAL_MGMT_ENDPOINT = 3
@@ -29,7 +28,6 @@ class AuthFactory:
         self._creators[auth_type] = creator
 
     def get_auth(self, auth_type: AuthenticationType, parameters: dict):
-
         creator = self._creators.get(auth_type)
 
         if not creator:

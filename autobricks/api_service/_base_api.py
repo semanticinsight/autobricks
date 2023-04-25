@@ -13,7 +13,6 @@ if not _ssl_verify:
 def base_api_get(
     url: str, headers: dict, json: dict = None, data: dict = None, params=None
 ):
-
     response = requests.get(
         url=url,
         headers=headers,
@@ -27,7 +26,6 @@ def base_api_get(
         response.raise_for_status()
 
     except HTTPError as e:
-
         msg = f"{e.response.status_code} error at {url} {e.response.text}"
         _logger.error(msg)
         raise e
@@ -38,7 +36,6 @@ def base_api_get(
 def base_api_delete(
     url: str, headers: dict, json: dict = None, data: dict = None, params=None
 ):
-
     response = requests.delete(
         url=url,
         headers=headers,
@@ -52,7 +49,6 @@ def base_api_delete(
         response.raise_for_status()
 
     except HTTPError as e:
-
         msg = f"{e.response.status_code} error at {url} {e.response.text}"
         _logger.error(msg)
         raise e
@@ -61,7 +57,6 @@ def base_api_delete(
 
 
 def base_api_post(url: str, headers: dict, json: dict = None, data: dict = None):
-
     response = requests.post(
         url=url, headers=headers, json=json, data=data, verify=_ssl_verify
     )
@@ -70,7 +65,6 @@ def base_api_post(url: str, headers: dict, json: dict = None, data: dict = None)
         response.raise_for_status()
 
     except HTTPError as e:
-
         msg = f"{e.response.status_code} error at {url} {e.response.text}"
         _logger.error(msg)
         raise e

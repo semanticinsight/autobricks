@@ -9,7 +9,6 @@ _api_service = ApiService()
 
 
 def library_all_cluster_statuses():
-
     return _api_service.api_get("libraries", "all-cluster-statuses")
 
 
@@ -24,7 +23,6 @@ class Wheel:
 
 
 def _is_wheel(entry):
-
     ret = entry.path.endswith(".whl")
     ret = ret and entry.is_file()
     ret = ret and ".dirty" not in entry.path
@@ -33,7 +31,6 @@ def _is_wheel(entry):
 
 
 def _get_wheel_version(wheel_path: str):
-
     version = inspect_wheel(wheel_path)["version"].split(".")
 
     if len(version) > 3:
@@ -48,7 +45,6 @@ def _get_wheel_version(wheel_path: str):
 
 
 def get_latest_wheel(path: str, name: str):
-
     directory = os.path.abspath(path)
     wheels = [
         _get_wheel_version(entry.path)
