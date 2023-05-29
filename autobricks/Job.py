@@ -101,6 +101,18 @@ def job_create(job: dict):
     return response
 
 
+def job_reset(job: dict):
+    name = job.get("name", "Unknown")
+    try:
+        response = _api_service.api_post(
+            endpoint, "reset", job, api_version=_JOBS_API_VERSION
+        )
+    except Exception:
+        raise JobException(name)
+
+    return response
+
+
 def job_delete(job_id: int):
     data = {"job_id": job_id}
     try:
@@ -160,7 +172,10 @@ def job_get_id(name: str):
 
 
 def job_recreate(job: dict):
-    name = job.get("name", "Unknown")
+    try:
+        name = job["name"]
+    except KeyError as e:
+        raise Exception(f"Job definition doesn't have a {e}.")
 
     job_id = job_get_id(name)
     _logger.info(f"Recreating job {name} job_id={job_id}")
@@ -173,7 +188,27 @@ def job_recreate(job: dict):
     job_create(job=job)
 
 
-def job_import_jobs(from_path: str, tags: Union[str, List[str], None] = None):
+def job_create_or_replace(job: dict):
+    try:
+        name = job["name"]
+    except KeyError as e:
+        raise Exception(f"Job definition doesn't have a {e}.")
+
+    job_id = job_get_id(name)
+
+    if job_id:
+        _logger.info(f"updaing job {name} job_id={job_id}")
+        job["new_settings"] = job
+        job["job_id"] = job_id
+        job_delete(job_id=job_id)
+    else:
+        _logger.info(f"creating new job {name}")
+        job_create(job=job)
+
+
+def job_import_jobs(
+    from_path: str, tags: Union[str, List[str], None] = None, recreate: bool = False
+):
     for root, _, files in os.walk(from_path):
         config_files = [f for f in files if get_metadata_format(f)]
 
@@ -187,4 +222,7 @@ def job_import_jobs(from_path: str, tags: Union[str, List[str], None] = None):
             in_tags = data.get("tags")
 
             if tags_exist_in(tags, in_tags):
-                job_recreate(data)
+                if recreate:
+                    job_recreate(data)
+                else:
+                    job_create_or_replace(data)
