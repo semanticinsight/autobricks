@@ -200,7 +200,7 @@ def job_create_or_replace(job: dict):
         _logger.info(f"updaing job {name} job_id={job_id}")
         job["new_settings"] = job
         job["job_id"] = job_id
-        job_delete(job_id=job_id)
+        job_update(job)
     else:
         _logger.info(f"creating new job {name}")
         job_create(job=job)
