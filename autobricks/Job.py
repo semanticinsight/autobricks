@@ -198,9 +198,11 @@ def job_create_or_replace(job: dict):
 
     if job_id:
         _logger.info(f"updaing job {name} job_id={job_id}")
-        job["new_settings"] = job
-        job["job_id"] = job_id
-        job_update(job)
+        upd_job = {
+            "new_settings": job,
+            "job_id": job_id
+        }
+        job_update(job=upd_job)
     else:
         _logger.info(f"creating new job {name}")
         job_create(job=job)
