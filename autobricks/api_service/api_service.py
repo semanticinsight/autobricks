@@ -4,6 +4,7 @@ from ._base_api import (
     base_api_get as _base_api_get,
     base_api_post as _base_api_post,
     base_api_delete as _base_api_delete,
+    base_api_put as _base_api_put,
 )
 from . import autobricks_logging
 from ._exceptions import AutobricksConfigurationInvalid, AutobricksResponseJsonError
@@ -68,7 +69,7 @@ class ApiService:
         _header_json = json.dumps(self._headers, indent=4)
         _logger.debug(_header_json)
 
-    def api_get(
+    def api_put(
         self,
         api: str,
         function: str,
@@ -81,6 +82,36 @@ class ApiService:
             url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
         else:
             url = f"{self.host}/api/{api_version}/{api}/{function}"
+
+        response = _base_api_put(
+            url=url, headers=self._headers, json=data, params=params
+        )
+
+        try:
+            json = response.json()
+        except Exception:
+            ex = AutobricksResponseJsonError(url, "PUT", data, response.text)
+            _logger.error(ex.message)
+            raise ex
+
+        return json
+
+    def api_get(
+        self,
+        api: str,
+        function: str,
+        data: dict = None,
+        params=None,
+        preview: bool = False,
+        api_version=_API_VERSION,
+    ):
+        if preview:
+            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}"
+        else:
+            url = f"{self.host}/api/{api_version}/{api}"
+
+        if function:
+            url = f"{url}/{function}"
 
         response = _base_api_get(
             url=url, headers=self._headers, json=data, params=params
@@ -131,9 +162,12 @@ class ApiService:
         api_version=_API_VERSION,
     ):
         if preview:
-            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}/{function}"
+            url = f"{self.host}/api/{api_version}/{_PREVIEW}/{api}"
         else:
-            url = f"{self.host}/api/{api_version}/{api}/{function}"
+            url = f"{self.host}/api/{api_version}/{api}"
+
+        if function:
+            url = f"{url}/{function}"
 
         response = _base_api_post(url=url, headers=self._headers, json=data)
 

@@ -1,5 +1,5 @@
 {
-    "name": "load_raw_header_footer",
+    "name": "load_raw_ad_works_lt",
     "email_notifications": {
         "on_start": [
             "sibytes.yetl@gmail.com"
@@ -28,10 +28,13 @@
     "tasks": [
         {
             "task_key": "create_audit_tables",
+            "depends_on": [
+                {
+                    "task_key": "clear"
+                }
+            ],
             "notebook_task": {
-                "notebook_path": "/header_footer/databricks/notebooks/bronze/create_audit_tables",
-                "base_parameters": {
-                },
+                "notebook_path": "/ad_works_lt/databricks/notebooks/bronze/create_audit_tables",
                 "source": "WORKSPACE"
             },
             "job_cluster_key": "dbx_patterns_job_cluster",
@@ -51,10 +54,11 @@
                 }
             ],
             "notebook_task": {
-                "notebook_path": "/header_footer/databricks/notebooks/bronze/raw_load",
+                "notebook_path": "/ad_works_lt/databricks/notebooks/bronze/raw_load",
                 "base_parameters": {
                     "process_id": "{{job_id}}",
-                    "process_group": "1"
+                    "process_group": "1",
+                    "timeslice": "2023-01-01"
                 },
                 "source": "WORKSPACE"
             },
@@ -68,18 +72,9 @@
             }
         },
         {
-            "task_key": "load_raw_2",
-            "depends_on": [
-                {
-                    "task_key": "create_audit_tables"
-                }
-            ],
+            "task_key": "clear",
             "notebook_task": {
-                "notebook_path": "/header_footer/databricks/notebooks/bronze/raw_load",
-                "base_parameters": {
-                    "process_id": "{{job_id}}",
-                    "process_group": "2"
-                },
+                "notebook_path": "/ad_works_lt/databricks/notebooks/clear_down",
                 "source": "WORKSPACE"
             },
             "job_cluster_key": "dbx_patterns_job_cluster",

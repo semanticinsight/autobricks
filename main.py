@@ -1,12 +1,17 @@
 import os
-from autobricks import Job
+from autobricks import Job, Pipeline
 
 ROOT_DIR = os.getenv("ROOT_DIR")
 
 
-path = os.path.join(ROOT_DIR, "Databricks/Workflows/")
+path = os.path.join(ROOT_DIR, "Databricks/Pipelines/")
+Pipeline.pipeline_import_pipelines(path)
 
-Job.job_import_jobs(path)
+
+
+# path = os.path.join(ROOT_DIR, "Databricks/Workflows/")
+
+# Job.job_import_jobs(path)
 
 # from autobricks import Workspace
 
